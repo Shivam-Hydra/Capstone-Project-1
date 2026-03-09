@@ -8,9 +8,9 @@ interface CourseCardProps {
 
 export function CourseCard({ course }: CourseCardProps) {
     return (
-        <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/60 dark:border-slate-800 p-5 rounded-2xl transition-all duration-500 shadow-sm hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_32px_rgba(59,130,246,0.15)] hover:-translate-y-1 hover:border-primary/40 group h-full relative overflow-hidden flex flex-col animate-fade-in">
-            {/* Futuristic hover gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-blue-300 group h-full relative overflow-hidden flex flex-col animate-fade-in">
+            {/* Hover gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-start justify-between mb-4">
@@ -39,15 +39,15 @@ export function CourseCard({ course }: CourseCardProps) {
                     </div>
                 </div>
 
-                <div className="mt-auto pt-5 border-t border-border/50 flex items-center justify-between">
+                <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
                     <div className="flex gap-2 overflow-hidden">
                         {course.tags.slice(0, 2).map((tag, i) => (
-                            <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md text-muted-foreground border border-border/50 px-2 py-1 rounded-md truncate max-w-[80px]">
+                            <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-1 rounded-md truncate max-w-[80px]">
                                 {tag}
                             </span>
                         ))}
                         {course.tags.length > 2 && (
-                            <span className="text-[10px] font-bold bg-white/50 dark:bg-slate-800/50 backdrop-blur-md text-muted-foreground border border-border/50 px-2 py-1 rounded-md">
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-1 rounded-md">
                                 +{course.tags.length - 2}
                             </span>
                         )}

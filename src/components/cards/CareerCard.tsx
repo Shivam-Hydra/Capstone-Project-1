@@ -37,9 +37,9 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
 
     return (
         <TiltCard rotationFactor={8} className="w-full max-w-sm">
-            <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/60 dark:border-slate-800 p-5 rounded-2xl transition-all duration-500 shadow-sm hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_32px_rgba(59,130,246,0.15)] hover:-translate-y-1 hover:border-primary/40 group h-full relative overflow-hidden">
-                {/* Futuristic Gradient Overlay on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-blue-300 group h-full relative overflow-hidden">
+                {/* Hover gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 
                 <div className="relative z-10">
                     <div className="flex justify-between items-start mb-4">
@@ -97,12 +97,12 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
                     <div className="flex gap-2 mt-5">
                         <Button
                             onClick={() => onViewRoadmap(career.id)}
-                            className="flex-1 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md text-foreground hover:bg-primary hover:text-white border border-border/50 hover:border-primary border-b-border border-b-2 hover:border-b-primary hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] h-9 text-xs font-bold rounded-xl transition-all duration-300"
+                            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 h-9 text-xs font-semibold rounded-xl transition-all duration-200 shadow-sm"
                         >
                             View Roadmap
                         </Button>
                         <Link href={`/roadmap/${career.id}`} tabIndex={-1}>
-                            <Button variant="outline" size="sm" className="h-9 w-9 p-0 rounded-xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-border/50 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-300" title="Full page roadmap">
+                            <Button variant="outline" size="sm" className="h-9 w-9 p-0 rounded-xl border border-slate-200 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200" title="Full page roadmap">
                                 <MapPin className="h-3.5 w-3.5" />
                             </Button>
                         </Link>

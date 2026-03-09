@@ -24,24 +24,23 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
         return (
             <div className="flex gap-4 w-full max-w-4xl justify-start">
                 {/* AI Avatar */}
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-primary/20 shrink-0 mt-1 shadow-inner shadow-primary/20">
-                    <span className="text-[12px] font-black tracking-tighter text-primary">AI</span>
+                <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 mt-1">
+                    <span className="text-[12px] font-black tracking-tighter text-blue-600">AI</span>
                 </div>
 
                 <div className="flex flex-col gap-5 w-full">
 
                     {/* Analysis text */}
                     {analysis && (
-                        <div className="px-6 py-4 rounded-3xl text-[15px] shadow-sm bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl text-foreground border border-white/40 dark:border-slate-800 w-full relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
-                            <p className="relative z-10 leading-relaxed">{analysis}</p>
+                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-white border border-slate-200 shadow-sm w-full">
+                            <p className="leading-relaxed text-slate-700">{analysis}</p>
                         </div>
                     )}
 
                     {/* Career Cards */}
                     {careers && careers.length > 0 && (
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3 pl-1">
+                            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 pl-1">
                                 Career Options
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -59,7 +58,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                     {/* Course Cards */}
                     {courses && courses.length > 0 && (
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3 pl-1">
+                            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 pl-1">
                                 Recommended Courses & Certifications
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -72,8 +71,8 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
 
                     {/* Follow-up question */}
                     {followUp && (
-                        <div className="px-6 py-4 rounded-3xl text-[15px] shadow-sm bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl text-foreground border border-white/40 dark:border-slate-800 w-full">
-                            <p className="leading-relaxed text-primary/90 font-medium">{followUp}</p>
+                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-blue-100 border border-blue-300 shadow-sm w-full">
+                            <p className="leading-relaxed text-blue-900 font-medium">{followUp}</p>
                         </div>
                     )}
                 </div>
@@ -85,8 +84,8 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
     return (
         <div className={cn("flex gap-4 w-full max-w-4xl", isUser ? "justify-end ml-auto" : "justify-start")}>
             {!isUser && (
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-primary/20 shrink-0 mt-1 shadow-inner shadow-primary/20 backdrop-blur-sm">
-                    <span className="text-[12px] font-black tracking-tighter text-primary">AI</span>
+                <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 mt-1">
+                    <span className="text-[12px] font-black tracking-tighter text-blue-600">AI</span>
                 </div>
             )}
 
@@ -96,15 +95,12 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
             )}>
                 {message.content && (
                     <div className={cn(
-                        "px-6 py-4 rounded-3xl text-[15px] shadow-sm transition-all duration-300 overflow-hidden relative",
+                        "px-6 py-4 rounded-2xl text-[15px] shadow-sm transition-all duration-200",
                         isUser
-                            ? "bg-gradient-to-br from-primary to-primary/90 text-white rounded-tr-sm shadow-primary/20"
-                            : "bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl text-foreground border border-white/40 dark:border-slate-800 w-full shadow-[0_4px_24px_-8px_rgba(0,0,0,0.1)]"
+                            ? "bg-blue-600 text-white rounded-tr-sm"
+                            : "bg-white border border-slate-200 text-slate-700 w-full"
                     )}>
-                        {!isUser && (
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
-                        )}
-                        <div className="relative z-10 whitespace-pre-wrap leading-relaxed">
+                        <div className="whitespace-pre-wrap leading-relaxed">
                             {message.content}
                         </div>
                     </div>
