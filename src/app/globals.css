@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius: 0.5rem;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.4s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0
+    }
+
+    to {
+      height: var(--radix-accordion-content-height)
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height)
+    }
+
+    to {
+      height: 0
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Custom Utilities */
+@utility glass-panel {
+  @apply bg-card border border-border shadow-sm;
+}
+
+@utility glass-button {
+  @apply bg-white hover:bg-muted border border-border transition-all duration-200 text-sm font-medium text-foreground;
+}
+
+@utility text-gradient {
+  @apply text-primary;
+}
+
+/* Force text color utility for debugging/fixing persistent white text */
+.force-text-contrast {
+  color: #000000 !important;
+}
+
+.dark .force-text-contrast {
+  color: #FFFFFF !important;
+}
+
+/* Base Styles */
+@layer base {
+  :root {
+    /* Light Mode - Trustworthy Light Blue */
+    --background: #EFF6FF;
+    --foreground: #0F172A;
+
+    --primary: #2563EB;
+    --primary-foreground: #FFFFFF;
+
+    --secondary: #FFFFFF;
+    --secondary-foreground: #0F172A;
+
+    --accent: #3B82F6;
+    --accent-foreground: #FFFFFF;
+
+    --destructive: #EF4444;
+    --destructive-foreground: #FFFFFF;
+
+    --muted: #DBEAFE;
+    --muted-foreground: #64748B;
+
+    --card: #FFFFFF;
+    --card-foreground: #0F172A;
+
+    --popover: #FFFFFF;
+    --popover-foreground: #0F172A;
+
+    --border: #BFDBFE;
+    --input: #E2E8F0;
+    --ring: #2563EB;
+  }
+
+  .dark {
+    /* Base - Professional Deep Navy */
+    --background: #0B1120;
+    --foreground: #F8FAFC;
+
+    /* Primary */
+    --primary: #3B82F6;
+    --primary-foreground: #FFFFFF;
+
+    /* Secondary - Muted Slate */
+    --secondary: #1E293B;
+    --secondary-foreground: #F8FAFC;
+
+    /* Accent */
+    --accent: #1E293B;
+    --accent-foreground: #F8FAFC;
+
+    /* Muted */
+    --muted: #1E293B;
+    --muted-foreground: #94A3B8;
+
+    /* Card */
+    --card: #151E32;
+    --card-foreground: #F8FAFC;
+
+    --popover: #0B1120;
+    --popover-foreground: #F8FAFC;
+
+    --border: #1E293B;
+    --input: #1E293B;
+    --ring: #3B82F6;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight text-foreground font-semibold;
+  }
+
+  p {
+    @apply text-muted-foreground leading-relaxed;
+  }
+}
