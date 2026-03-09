@@ -5,6 +5,7 @@ import { UserProfile, Career } from '@/types';
 interface UserState {
     profile: Partial<UserProfile> | null;
     savedCareers: Career[];
+    chatCareers: Career[];          // Latest career recommendations from chat
     hasCompletedOnboarding: boolean;
 
     setProfile: (profile: Partial<UserProfile>) => void;
@@ -12,6 +13,7 @@ interface UserState {
     completeOnboarding: () => void;
     saveCareer: (career: Career) => void;
     removeCareer: (careerId: string) => void;
+    setChatCareers: (careers: Career[]) => void; // Save careers from chat response
 }
 
 export const useUserStore = create<UserState>()(
@@ -19,6 +21,7 @@ export const useUserStore = create<UserState>()(
         (set) => ({
             profile: null,
             savedCareers: [],
+            chatCareers: [],
             hasCompletedOnboarding: false,
 
             setProfile: (profile) => set({ profile }),
@@ -37,9 +40,11 @@ export const useUserStore = create<UserState>()(
             removeCareer: (careerId) => set((state) => ({
                 savedCareers: state.savedCareers.filter(c => c.id !== careerId)
             })),
+
+            setChatCareers: (careers) => set({ chatCareers: careers }),
         }),
         {
-            name: 'career-ai-storage', // localStorage key
+            name: 'career-ai-storage',
         }
     )
 );

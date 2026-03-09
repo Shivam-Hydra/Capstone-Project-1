@@ -22,7 +22,7 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ initialMessage }: ChatWindowProps) {
-    const { profile } = useUserStore();
+    const { profile, setChatCareers } = useUserStore();
     const { user } = useAuth();
 
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -92,6 +92,11 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
                     },
                 },
             };
+
+            // Save career recommendations to store → displayed on /careers page
+            if (data.careers?.length > 0) {
+                setChatCareers(data.careers);
+            }
 
             setMessages(prev => [...prev, assistantMsg]);
         } catch (err: any) {
