@@ -95,15 +95,11 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
                     </div>
 
                     <div className="flex gap-2 mt-5">
-                        <Button
-                            onClick={() => onViewRoadmap(career.id)}
-                            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 h-9 text-xs font-semibold rounded-xl transition-all duration-200 shadow-sm"
-                        >
-                            View Roadmap
-                        </Button>
-                        <Link href={`/roadmap/${career.id}`} tabIndex={-1}>
-                            <Button variant="outline" size="sm" className="h-9 w-9 p-0 rounded-xl border border-slate-200 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200" title="Full page roadmap">
-                                <MapPin className="h-3.5 w-3.5" />
+                        <Link href={`/roadmap/${career.id}`} className="flex-1">
+                            <Button
+                                className="w-full bg-blue-600 text-white hover:bg-blue-700 h-9 text-xs font-semibold rounded-xl transition-all duration-200 shadow-sm"
+                            >
+                                View Roadmap
                             </Button>
                         </Link>
                     </div>

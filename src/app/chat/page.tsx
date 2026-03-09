@@ -7,12 +7,12 @@ import { Sparkles } from "lucide-react";
 import { useUserStore } from "@/lib/store";
 
 export default function ChatPage() {
-    const { setProfile, completeOnboarding } = useUserStore();
+    const { setProfile, completeOnboarding, chatMessages } = useUserStore();
     const [isLoading, setIsLoading] = useState(false);
     const [initialMessage, setInitialMessage] = useState("");
 
-    // Always show the qualification form first on every page visit
-    const [showChat, setShowChat] = useState(false);
+    // Show chat immediately if we have history
+    const [showChat, setShowChat] = useState(chatMessages.length > 0);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => { setMounted(true); }, []);

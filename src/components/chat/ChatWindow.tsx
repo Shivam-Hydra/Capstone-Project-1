@@ -22,10 +22,10 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ initialMessage }: ChatWindowProps) {
-    const { profile, setChatCareers } = useUserStore();
+    const { profile, setChatCareers, setChatCourses, chatMessages, setChatMessages, clearChat } = useUserStore();
     const { user } = useAuth();
 
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [messages, setMessages] = useState<ChatMessage[]>(chatMessages);
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const [userMessageCount, setUserMessageCount] = useState(0);
@@ -33,8 +33,11 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     // Keep a live ref to messages to avoid stale closures in handlers
-    const messagesRef = useRef<ChatMessage[]>([]);
-    useEffect(() => { messagesRef.current = messages; }, [messages]);
+    const messagesRef = useRef<ChatMessage[]>(chatMessages);
+    useEffect(() => { 
+        messagesRef.current = messages;
+        setChatMessages(messages); // Sync local state back to global store
+    }, [messages, setChatMessages]);
 
     // Prevent double-initialization in React StrictMode
     const hasInitialized = useRef(false);
@@ -93,9 +96,12 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
                 },
             };
 
-            // Save career recommendations to store → displayed on /careers page
+            // Save career and course recommendations to store
             if (data.careers?.length > 0) {
                 setChatCareers(data.careers);
+            }
+            if (data.courses?.length > 0) {
+                setChatCourses(data.courses);
             }
 
             setMessages(prev => [...prev, assistantMsg]);
@@ -115,6 +121,13 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
     useEffect(() => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
+
+        if (chatMessages.length > 0) {
+            // If we have persisted messages, calculate message count from them
+            const userMsgs = chatMessages.filter(m => m.role === "user").length;
+            setUserMessageCount(userMsgs);
+            return;
+        }
 
         const greeting = initialMessage
             ? `Analysing your profile — career recommendations coming right up!`
@@ -144,7 +157,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
             setMessages([greetingMsg]);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [chatMessages, initialMessage, callApi]);
 
     // Auto-scroll
     useEffect(() => {
@@ -185,6 +198,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
         const greeting = `Hello! I'm CareerAI. Tell me about your education or qualification and I'll suggest the best career paths and courses for you.`;
         setMessages([{ id: Date.now().toString(), role: "assistant", content: greeting, timestamp: new Date(), metadata: { type: "greeting" } as any }]);
         setUserMessageCount(0);
+        clearChat(); // Clear global store
     };
 
     const handleAction = (_action: string, _data?: any) => {};

@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { Career, Roadmap } from "@/types";
 import { useUserStore } from "@/lib/store";
 import { CareerCard } from "@/components/cards/CareerCard";
-import { RoadmapView } from "@/components/cards/RoadmapView";
 import { Button } from "@/components/ui/button";
-import { CAREERS, mockGetRoadmap } from "@/lib/mock-data";
+import { CAREERS } from "@/lib/mock-data";
 import { ArrowLeft, Loader2, BrainCircuit, MessageCircle } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { auth } from "@/lib/firebase";
@@ -15,7 +14,6 @@ import Link from "next/link";
 export default function CareersPage() {
     const { chatCareers, savedCareers, profile } = useUserStore();
     const [careers, setCareers] = useState<Career[]>([]);
-    const [selectedRoadmap, setSelectedRoadmap] = useState<Roadmap | null>(null);
     const [loading, setLoading] = useState(false);
     const source = chatCareers.length > 0 ? "chat" : "api";
 
@@ -59,24 +57,11 @@ export default function CareersPage() {
         fetchCareers();
     }, [chatCareers, profile]);
 
-    const handleViewRoadmap = async (id: string) => {
-        const roadmap = await mockGetRoadmap(id);
-        if (roadmap) setSelectedRoadmap(roadmap);
-    };
-
     return (
         <ProtectedRoute>
             <div className="container mx-auto px-4 pt-24 pb-12 animate-fade-in">
-                {selectedRoadmap ? (
-                    <div className="max-w-3xl mx-auto space-y-6">
-                        <Button variant="ghost" onClick={() => setSelectedRoadmap(null)} className="gap-2">
-                            <ArrowLeft className="h-4 w-4" /> Back to Careers
-                        </Button>
-                        <RoadmapView roadmap={selectedRoadmap} />
-                    </div>
-                ) : (
-                    <div className="space-y-8">
-                        {/* Header */}
+                <div className="space-y-8">
+                    {/* Header */}
                         <div className="text-center space-y-4">
                             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200 mb-2">
                                 <BrainCircuit className="h-3.5 w-3.5" />
@@ -114,14 +99,13 @@ export default function CareersPage() {
                                     <CareerCard
                                         key={career.id}
                                         career={career}
-                                        onViewRoadmap={handleViewRoadmap}
                                         isSaved={savedCareers.some(c => c.id === career.id)}
+                                        onViewRoadmap={() => {}} // Legacy prop on card component, safely ignore
                                     />
                                 ))}
                             </div>
                         )}
                     </div>
-                )}
             </div>
         </ProtectedRoute>
     );

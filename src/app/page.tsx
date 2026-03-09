@@ -1,8 +1,21 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Features } from "@/components/features/Features";
 import Link from "next/link";
+import { useUserStore } from "@/lib/store";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const { chatMessages } = useUserStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const hasHistory = chatMessages && chatMessages.length > 0;
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 md:p-24 relative overflow-hidden bg-background">
       {/* Clean Background - Plain Solid Color */}
@@ -25,7 +38,7 @@ export default function Home() {
         <div className="mt-8 flex items-center justify-center gap-x-4">
           <Link href="/chat">
             <Button className="h-12 px-8 text-base bg-primary text-white hover:bg-primary/90 border-0 rounded-lg font-medium shadow-md transition-all active:scale-95">
-              Start Career Chat
+              {mounted && hasHistory ? "Continue Career Chat" : "Start Career Chat"}
             </Button>
           </Link>
           <Link href="/profile/create">

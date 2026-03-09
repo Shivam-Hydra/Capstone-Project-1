@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { UserProfile, Career } from '@/types';
+import { UserProfile, Career, Course, ChatMessage } from '@/types';
 
 interface UserState {
     profile: Partial<UserProfile> | null;
     savedCareers: Career[];
     chatCareers: Career[];          // Latest career recommendations from chat
+    chatCourses: Course[];          // Latest course recommendations from chat
+    chatMessages: ChatMessage[];    // Persisted chat history
     hasCompletedOnboarding: boolean;
 
     setProfile: (profile: Partial<UserProfile>) => void;
@@ -13,7 +15,13 @@ interface UserState {
     completeOnboarding: () => void;
     saveCareer: (career: Career) => void;
     removeCareer: (careerId: string) => void;
-    setChatCareers: (careers: Career[]) => void; // Save careers from chat response
+    setChatCareers: (careers: Career[]) => void;
+    setChatCourses: (courses: Course[]) => void; // Save courses from chat response
+    
+    // Chat Persistence Actions
+    addChatMessage: (message: ChatMessage) => void;
+    setChatMessages: (messages: ChatMessage[]) => void;
+    clearChat: () => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -22,6 +30,8 @@ export const useUserStore = create<UserState>()(
             profile: null,
             savedCareers: [],
             chatCareers: [],
+            chatCourses: [],
+            chatMessages: [],
             hasCompletedOnboarding: false,
 
             setProfile: (profile) => set({ profile }),
@@ -42,6 +52,11 @@ export const useUserStore = create<UserState>()(
             })),
 
             setChatCareers: (careers) => set({ chatCareers: careers }),
+            setChatCourses: (courses) => set({ chatCourses: courses }),
+
+            addChatMessage: (msg) => set((state) => ({ chatMessages: [...state.chatMessages, msg] })),
+            setChatMessages: (msgs) => set({ chatMessages: msgs }),
+            clearChat: () => set({ chatMessages: [], chatCareers: [], chatCourses: [] }),
         }),
         {
             name: 'career-ai-storage',

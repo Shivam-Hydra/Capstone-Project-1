@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Force Tailwind's dark modifier to use the class strategy instead of OS media queries to sync with next-themes */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
