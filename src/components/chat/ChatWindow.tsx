@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles, RotateCcw, Lock } from "lucide-react";
+import { Send, Sparkles, RotateCcw, Lock, FileText, Link as LinkIcon } from "lucide-react";
 import { MessageBubble } from "@/components/chat/MessageBubble";
 import { LoginOverlay } from "@/components/chat/LoginOverlay";
 import { ChatMessage, Career, Course } from "@/types";
@@ -31,6 +31,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
     const [userMessageCount, setUserMessageCount] = useState(0);
     const [showOverlay, setShowOverlay] = useState(false);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Keep a live ref to messages to avoid stale closures in handlers
     const messagesRef = useRef<ChatMessage[]>(chatMessages);
@@ -193,6 +194,116 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
         callApi(conversationMsgs, userMessageCount);
     };
 
+    // ── File Upload Handler ───────────────────────────────────────────────
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Reset input so the same file can be selected again if needed
+        e.target.value = "";
+
+        if (file.size > 5 * 1024 * 1024) {
+            setMessages(prev => [...prev, {
+                id: Date.now().toString(),
+                role: "assistant",
+                content: "⚠️ The file is too large. Please upload a PDF or DOCX under 5MB.",
+                timestamp: new Date()
+            }]);
+            return;
+        }
+
+        setIsTyping(true);
+        const baseCount = userMessageCount;
+        
+        // Add a temporary user message so the UI responds instantly
+        const tempId = Date.now().toString();
+        const rawUserMsg: ChatMessage = {
+            id: tempId,
+            role: "user",
+            content: `Uploading document: **${file.name}**...`,
+            timestamp: new Date(),
+            metadata: {
+                type: "file-upload",
+                data: {
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileType: file.type,
+                    status: "uploading"
+                }
+            } as any
+        };
+        
+        const updatedWithTemp = [...messagesRef.current, rawUserMsg];
+        setMessages(updatedWithTemp);
+        setUserMessageCount(baseCount + 1);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const token = await getAuthToken();
+            const uploadRes = await fetch("/api/chat/upload", {
+                method: "POST",
+                headers: {
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: formData,
+            });
+
+            const uploadData = await uploadRes.json();
+
+            if (!uploadRes.ok) {
+                throw new Error(uploadData.error || "Failed to process the uploaded file.");
+            }
+
+            // Successfully extracted text from the document.
+            const extractedText = uploadData.text;
+            const simulatedUserPrompt = `I have uploaded my profile/resume. Here is the extracted text from my document:\n\n"""\n${extractedText}\n"""\n\nPlease analyze my qualifications and suggest the best career paths and courses based exclusively on this information.`;
+
+            // Update the temporary message to "completed" status
+            const completedUserMsg: ChatMessage = {
+                ...rawUserMsg,
+                content: `Uploaded document: **${file.name}**`,
+                metadata: {
+                    ...rawUserMsg.metadata,
+                    data: { ...rawUserMsg.metadata?.data, status: "completed" }
+                } as any
+            };
+
+            const finalizedMessages = updatedWithTemp.map(m => m.id === tempId ? completedUserMsg : m);
+            setMessages(finalizedMessages);
+
+            // Create a hidden prompt variant strictly for the API request so we don't clog the UI
+            const apiMsg: ChatMessage = { ...completedUserMsg, content: simulatedUserPrompt };
+            
+            const conversationMsgs = finalizedMessages.filter(
+                m => !m.metadata?.type || (m.metadata.type as string) !== "greeting"
+            ).map(m => m.id === tempId ? apiMsg : m); // Swap the visual msg with the data-rich one
+
+            await callApi(conversationMsgs, baseCount + 1);
+
+        } catch (err: any) {
+            console.error("Upload handler error:", err);
+            // Update the temporary message to show error instead of removing it
+            const errorUserMsg: ChatMessage = {
+                ...rawUserMsg,
+                content: `Failed to upload: **${file.name}**`,
+                metadata: {
+                    ...rawUserMsg.metadata,
+                    data: { 
+                        ...rawUserMsg.metadata?.data, 
+                        status: "error",
+                        error: err.message || "Failed to process file"
+                    }
+                } as any
+            };
+
+            setMessages(prev => prev.map(m => m.id === tempId ? errorUserMsg : m));
+            setUserMessageCount(baseCount); // rollback count conceptually if needed, though message stays
+            setIsTyping(false);
+        }
+    };
+
     // ── Reset ─────────────────────────────────────────────────────────────
     const handleReset = () => {
         const greeting = `Hello! I'm CareerAI. Tell me about your education or qualification and I'll suggest the best career paths and courses for you.`;
@@ -276,16 +387,39 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
                         </p>
                     </div>
                 ) : (
-                    <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-3 max-w-4xl mx-auto">
-                        <input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Ask about career paths, skills, courses..."
-                            disabled={isTyping}
-                            maxLength={2000}
-                            className="flex-1 bg-secondary/30 border border-border rounded-lg px-5 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-60"
-                        />
-                        <Button type="submit" size="icon" disabled={isTyping || !input.trim()} className="bg-primary text-white hover:bg-primary/90 rounded-lg h-[46px] w-[46px] shadow-sm disabled:opacity-50">
+                    <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-3 max-w-4xl mx-auto items-center">
+                        <div className="relative flex-1">
+                            <input
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="Ask about career paths, skills, courses..."
+                                disabled={isTyping}
+                                maxLength={2000}
+                                className="w-full bg-secondary/30 border border-border rounded-lg pl-5 pr-14 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-60"
+                            />
+                            <button
+                                type="button"
+                                title="Attach Resume (PDF/DOCX)"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isTyping}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors p-1.5 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-md disabled:opacity-50"
+                            >
+                                <div className="relative flex items-center justify-center">
+                                    <FileText className="h-4 w-4" strokeWidth={2} />
+                                    <div className="absolute -bottom-1.5 -right-1.5 bg-[#f8fafc] dark:bg-[#0f172a] rounded-full p-[1px]">
+                                        <LinkIcon className="h-3 w-3" strokeWidth={3} />
+                                    </div>
+                                </div>
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                className="hidden"
+                            />
+                        </div>
+                        <Button type="submit" size="icon" disabled={isTyping || !input.trim()} className="shrink-0 bg-primary text-white hover:bg-primary/90 rounded-lg h-[46px] w-[46px] shadow-sm disabled:opacity-50">
                             <Send className="h-4 w-4" />
                         </Button>
                     </form>

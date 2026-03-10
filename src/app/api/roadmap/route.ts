@@ -34,8 +34,8 @@ Rules:
 - Make the steps highly specific to the provided career.
 - Return ONLY the JSON object. No markdown code fences. No extra explanation.`;
 
-const GUEST_LIMIT = 5;
-const AUTH_LIMIT = 20;
+const GUEST_LIMIT = 50;
+const AUTH_LIMIT = 200;
 
 export async function POST(req: NextRequest) {
     try {
@@ -111,6 +111,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ roadmap: fullRoadmap }, { headers: { "X-RateLimit-Remaining": String(rl.remaining) } });
     } catch (error: any) {
         console.error("[/api/roadmap] Error:", error?.message ?? error);
+        if (error?.message?.includes("429") || error?.message?.includes("quota") || error?.message?.includes("retry")) {
+            return NextResponse.json({ error: "AI service is busy. Please wait and try again." }, { status: 429 });
+        }
         return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
     }
 }

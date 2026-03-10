@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { CareerCard } from "@/components/cards/CareerCard";
 import { CourseCard } from "@/components/cards/CourseCard";
 import { RoadmapView } from "@/components/cards/RoadmapView";
+import { FileText, Loader2 } from "lucide-react";
 
 interface MessageBubbleProps {
     message: ChatMessage;
@@ -32,8 +33,8 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
 
                     {/* Analysis text */}
                     {analysis && (
-                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-white border border-slate-200 shadow-sm w-full">
-                            <p className="leading-relaxed text-slate-700">{analysis}</p>
+                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-secondary/60 text-foreground w-full bubble-tail-left relative">
+                            <p className="leading-relaxed">{analysis}</p>
                         </div>
                     )}
 
@@ -93,12 +94,59 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                 "flex flex-col gap-2",
                 isUser ? "items-end max-w-[85%]" : "items-start w-full"
             )}>
-                {message.content && (
+                {message.metadata?.type === "file-upload" ? (
                     <div className={cn(
-                        "px-6 py-4 rounded-2xl text-[15px] shadow-sm transition-all duration-200",
+                        "px-4 py-3 rounded-2xl shadow-sm transition-all duration-200 flex items-center gap-3 min-w-[200px] max-w-full relative",
                         isUser
-                            ? "bg-blue-600 text-white rounded-tr-sm"
-                            : "bg-white border border-slate-200 text-slate-700 w-full"
+                            ? (message.metadata.data?.status === "error" ? "bg-red-600 text-white bubble-tail-right" : "bg-blue-600 text-white bubble-tail-right")
+                            : (message.metadata.data?.status === "error" ? "bg-red-50 border border-red-200 text-red-700 bubble-tail-left" : "bg-secondary border-transparent text-secondary-foreground w-full bubble-tail-left"),
+                    )}>
+                        <div className={cn(
+                            "p-2.5 rounded-xl flex items-center justify-center shrink-0",
+                            isUser ? "bg-white/20 text-white" : (message.metadata.data?.status === "error" ? "bg-red-100 text-red-600" : "bg-blue-50 text-blue-600")
+                        )}>
+                            {message.metadata.data?.status === "uploading" ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : message.metadata.data?.status === "error" ? (
+                                <div className="h-5 w-5 flex items-center justify-center font-bold">!</div>
+                            ) : (
+                                <FileText className="h-5 w-5" />
+                            )}
+                        </div>
+                        <div className="flex flex-col min-w-0 pr-2">
+                            <span className="text-sm font-semibold truncate leading-tight">
+                                {message.metadata.data?.fileName || "Document"}
+                            </span>
+                            {message.metadata.data?.status === "uploading" ? (
+                                <span className={cn(
+                                    "text-[10px] mt-0.5 font-medium animate-pulse",
+                                    isUser ? "text-blue-100" : "text-muted-foreground"
+                                )}>
+                                    Uploading and parsing...
+                                </span>
+                            ) : message.metadata.data?.status === "error" ? (
+                                <span className={cn(
+                                    "text-[10px] mt-0.5 font-medium",
+                                    isUser ? "text-red-100" : "text-red-600"
+                                )}>
+                                    {message.metadata.data?.error || "Error processing file"}
+                                </span>
+                            ) : message.metadata.data?.fileSize && (
+                                <span className={cn(
+                                    "text-[10px] mt-0.5",
+                                    isUser ? "text-blue-200" : "text-muted-foreground"
+                                )}>
+                                    {(message.metadata.data.fileSize / 1024).toFixed(1)} KB
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                ) : message.content && (
+                    <div className={cn(
+                        "px-6 py-4 rounded-2xl text-[15px] shadow-sm transition-all duration-200 relative",
+                        isUser
+                            ? "bg-blue-600 text-white bubble-tail-right"
+                            : "bg-secondary border-transparent text-secondary-foreground w-full bubble-tail-left"
                     )}>
                         <div className="whitespace-pre-wrap leading-relaxed">
                             {message.content}

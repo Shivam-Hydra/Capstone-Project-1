@@ -83,6 +83,9 @@ Return only the raw JSON array, no markdown.`;
         return NextResponse.json({ courses });
     } catch (error: any) {
         console.error("[/api/courses] Error:", error?.message ?? error);
-        return NextResponse.json({ courses: [] }, { status: 500 });
+        if (error?.message?.includes("429") || error?.message?.includes("quota") || error?.message?.includes("retry")) {
+            return NextResponse.json({ error: "AI service is busy. Please wait and try again.", courses: [] }, { status: 429 });
+        }
+        return NextResponse.json({ error: "Something went wrong. Please try again.", courses: [] }, { status: 500 });
     }
 }

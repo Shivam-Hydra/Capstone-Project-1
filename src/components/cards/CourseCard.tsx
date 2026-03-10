@@ -7,57 +7,85 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
+    // Deterministic curated Unsplash images for courses
+    const images = [
+        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80"
+    ];
+    // Hash to assign a constant image based on course title letters
+    const charCodeSum = course.title.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const bgImage = images[charCodeSum % images.length];
+
     return (
-        <div className="bg-white border border-slate-200 p-5 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-blue-300 group h-full relative overflow-hidden flex flex-col animate-fade-in">
-            {/* Hover gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="relative h-[480px] w-full max-w-sm rounded-[32px] overflow-hidden group shadow-lg transition-transform duration-300 hover:scale-[1.02] flex flex-col animate-fade-in mx-auto">
+            
+            {/* Background Image */}
+            <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                style={{ backgroundImage: `url('${bgImage}')` }}
+            />
+            
+            {/* Heavy Dark Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/10" />
 
-            <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                        <span className="text-[10px] uppercase font-black tracking-widest text-primary bg-gradient-to-r from-primary/20 to-primary/5 px-2.5 py-1 rounded-md inline-block mb-3 border border-primary/20 shadow-inner">
-                            {course.provider}
+            {/* Platform Tag (Top Right) */}
+            <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/20">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-white">{course.provider}</span>
+            </div>
+
+            {/* Content Container positioned at the bottom */}
+            <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end z-10 h-full">
+                
+                {/* Title and Short Description */}
+                <div className="mb-4 mt-auto">
+                    <h3 className="text-xl font-bold text-white tracking-tight leading-tight line-clamp-2">{course.title}</h3>
+                </div>
+
+                {/* Glassmorphic Pills Container */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                    {/* Rating Pill */}
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/30">
+                        <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+                        <span className="text-amber-100 text-xs font-bold">{course.rating.toFixed(1)}</span>
+                    </div>
+
+                    {/* Level Pill */}
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                        <BookOpen className="h-3.5 w-3.5 text-white/70" />
+                        <span className="text-white text-xs font-semibold">{course.level}</span>
+                    </div>
+                    
+                    {/* Duration Pill */}
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                        <Clock className="h-3.5 w-3.5 text-white/70" />
+                        <span className="text-white text-xs font-semibold">{course.duration}</span>
+                    </div>
+                </div>
+
+                {/* Tags section (optional, keeping it minimal like the reference to avoid clutter) */}
+                <div className="flex flex-wrap gap-1.5 mb-5 opacity-80">
+                    {course.tags.slice(0, 3).map((tag, i) => (
+                        <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-white/5 text-white/80 border border-white/10 px-2 py-1 rounded-md">
+                            {tag}
                         </span>
-                        <h3 className="font-bold text-foreground text-[15px] line-clamp-2 leading-tight group-hover:text-primary transition-colors duration-300">
-                            {course.title}
-                        </h3>
-                    </div>
-                    <div className="bg-gradient-to-br from-amber-400/20 to-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs px-2 py-1 rounded-md flex items-center gap-1.5 font-bold ml-3 shrink-0 shadow-inner">
-                        <Star className="h-3 w-3 fill-amber-500 text-amber-500 drop-shadow-[0_0_5px_rgba(245,158,11,0.5)]" /> 
-                        {course.rating.toFixed(1)}
-                    </div>
+                    ))}
+                    {course.tags.length > 3 && (
+                        <span className="text-[10px] font-bold bg-white/5 text-white/80 border border-white/10 px-2 py-1 rounded-md">
+                            +{course.tags.length - 3}
+                        </span>
+                    )}
                 </div>
 
-                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mb-5 font-medium opacity-90">
-                    <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-white/10">
-                        <BookOpen className="h-3.5 w-3.5 text-primary/80" />
-                        <span>{course.level}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-white/10">
-                        <Clock className="h-3.5 w-3.5 text-primary/80" />
-                        <span>{course.duration}</span>
-                    </div>
-                </div>
-
-                <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
-                    <div className="flex gap-2 overflow-hidden">
-                        {course.tags.slice(0, 2).map((tag, i) => (
-                            <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-1 rounded-md truncate max-w-[80px]">
-                                {tag}
-                            </span>
-                        ))}
-                        {course.tags.length > 2 && (
-                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-1 rounded-md">
-                                +{course.tags.length - 2}
-                            </span>
-                        )}
-                    </div>
-                    <Button size="sm" className="h-8 text-[11px] font-bold tracking-wider gap-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary rounded-lg transition-all duration-300 shadow-inner border border-primary/20 hover:border-primary px-3 shadow-primary/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]" asChild>
-                        <a href={course.url} target="_blank" rel="noreferrer">
-                            View <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                    </Button>
-                </div>
+                {/* Call to Action Button */}
+                <Button className="w-full bg-white hover:bg-slate-100 text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl" asChild>
+                    <a href={course.url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
+                        View Course <ExternalLink className="h-4 w-4" />
+                    </a>
+                </Button>
             </div>
         </div>
     );

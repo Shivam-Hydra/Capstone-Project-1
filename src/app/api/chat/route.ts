@@ -47,9 +47,9 @@ Rules:
 - level must be exactly one of: "Beginner", "Intermediate", "Advanced"
 - Return ONLY the JSON object. No markdown code fences. No extra explanation.`;
 
-const GUEST_LIMIT = 15;
-const AUTH_LIMIT = 60;
-const MAX_MESSAGE_LENGTH = 2000;
+const GUEST_LIMIT = 50;
+const AUTH_LIMIT = 200;
+const MAX_MESSAGE_LENGTH = 30000;
 const MAX_HISTORY_MESSAGES = 10;
 
 export async function POST(req: NextRequest) {

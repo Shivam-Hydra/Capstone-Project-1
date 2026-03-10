@@ -77,7 +77,7 @@ export interface ChatMessage {
     content: string;
     timestamp: Date;
     metadata?: {
-        type: "text" | "career-list" | "career-response" | "course-list" | "roadmap" | "clarification" | "greeting";
+        type: "text" | "career-list" | "career-response" | "course-list" | "roadmap" | "clarification" | "greeting" | "file-upload";
         data?: any;
     };
 }
