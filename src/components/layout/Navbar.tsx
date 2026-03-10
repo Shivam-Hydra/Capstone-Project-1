@@ -8,11 +8,13 @@ import { Menu, Sparkles, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/lib/auth-context";
+import { useUserStore } from "@/lib/store";
 
 export function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const { user, loading, logout } = useAuth();
+    const { profile } = useUserStore();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
@@ -42,6 +44,8 @@ export function Navbar() {
     const initials = user?.displayName
         ? user.displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
         : user?.email?.[0].toUpperCase() ?? "U";
+
+    const photoURL = profile?.photoURL || user?.photoURL;
 
     return (
         <nav
@@ -75,16 +79,23 @@ export function Navbar() {
                             key={link.href}
                             href={link.href}
                             className={cn(
-                                "text-xl font-medium transition-all duration-200 relative py-1",
+                                "text-xl font-medium transition-all duration-300 relative py-1 group flex flex-col items-center hover:scale-105 active:scale-95",
                                 pathname === link.href
-                                    ? "text-blue-600 font-semibold"
-                                    : "text-slate-500 hover:text-slate-900"
+                                    ? "text-blue-600 font-semibold drop-shadow-[0_0_8px_rgba(37,99,235,0.3)]"
+                                    : "text-slate-500 hover:text-blue-600 hover:drop-shadow-[0_0_8px_rgba(37,99,235,0.5)]"
                             )}
                         >
-                            {link.name}
-                            {pathname === link.href && (
-                                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-600 rounded-full" />
-                            )}
+                            <span className="relative z-10 transition-transform duration-300">
+                                {link.name}
+                            </span>
+
+                            {/* Centered Expanding Underline */}
+                            <span className={cn(
+                                "absolute -bottom-1 h-0.5 bg-blue-600 rounded-full transition-all duration-300 origin-center",
+                                pathname === link.href
+                                    ? "w-full scale-x-100 opacity-100"
+                                    : "w-full scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
+                            )} />
                         </Link>
                     ))}
                 </div>
@@ -99,8 +110,12 @@ export function Navbar() {
                                 <div className="flex items-center gap-3">
                                     <Link href="/profile">
                                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer group">
-                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                                                {initials}
+                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold overflow-hidden">
+                                                {photoURL ? (
+                                                    <img src={photoURL} alt="User" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    initials
+                                                )}
                                             </div>
                                             <span className="text-sm font-medium text-slate-700 group-hover:text-blue-700 max-w-[100px] truncate">
                                                 {user.displayName ?? user.email}
@@ -164,8 +179,15 @@ export function Navbar() {
                         {user ? (
                             <>
                                 <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button variant="ghost" className="w-full justify-start gap-2">
-                                        <User className="h-4 w-4" /> {user.displayName ?? user.email}
+                                    <Button variant="ghost" className="w-full justify-start gap-2 px-2">
+                                        <div className="h-6 w-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
+                                            {photoURL ? (
+                                                <img src={photoURL} alt="User" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User className="h-3 w-3" />
+                                            )}
+                                        </div>
+                                        <span className="truncate">{user.displayName ?? user.email}</span>
                                     </Button>
                                 </Link>
                                 <Button

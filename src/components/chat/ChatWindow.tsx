@@ -31,6 +31,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
     const [userMessageCount, setUserMessageCount] = useState(0);
     const [showOverlay, setShowOverlay] = useState(false);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Keep a live ref to messages to avoid stale closures in handlers
@@ -162,7 +163,9 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
 
     // Auto-scroll
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
     }, [messages, isTyping]);
 
     // Hide overlay on sign-in
@@ -395,7 +398,10 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-background">
+            <div
+                ref={scrollContainerRef}
+                className="flex-1 overflow-y-auto p-6 space-y-8 bg-background scroll-smooth"
+            >
                 {messages.map((msg) => (
                     <MessageBubble key={msg.id} message={msg} onAction={handleAction} />
                 ))}

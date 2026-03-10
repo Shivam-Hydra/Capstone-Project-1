@@ -4,6 +4,7 @@ export interface UserProfile {
     id: string;
     name: string;
     email: string;
+    photoURL?: string;
     education: {
         level: EducationLevel;
         degree?: string; // e.g. B.Tech
