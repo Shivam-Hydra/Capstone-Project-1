@@ -8,6 +8,30 @@ interface InteractiveCareerOrbitsProps {
     careers: Career[];
 }
 
+// Helper to get reliable semantic search terms for LoremFlickr based on career title
+const getProfessionSearchTerms = (title: string, domain?: string) => {
+    const text = (title + " " + (domain || "")).toLowerCase();
+    
+    if (text.includes("software") || text.includes("code") || text.includes("developer") || text.includes("tech") || text.includes("program")) return "technology,coding";
+    if (text.includes("design") || text.includes("art") || text.includes("ui") || text.includes("ux")) return "ux,design";
+    if (text.includes("medic") || text.includes("health") || text.includes("doctor") || text.includes("nurse")) return "medical,hospital";
+    if (text.includes("finance") || text.includes("data") || text.includes("analytic") || text.includes("account")) return "finance,data";
+    if (text.includes("market") || text.includes("sales") || text.includes("seo") || text.includes("brand")) return "marketing,business";
+    if (text.includes("engineer") || text.includes("construct") || text.includes("architect")) return "engineering,architecture";
+    if (text.includes("law") || text.includes("legal") || text.includes("attorney")) return "law,legal";
+    if (text.includes("educat") || text.includes("teach") || text.includes("tutor")) return "education,school";
+    if (text.includes("science") || text.includes("research") || text.includes("lab") || text.includes("biol")) return "science,laboratory";
+    if (text.includes("writ") || text.includes("content") || text.includes("author") || text.includes("journal")) return "writing,typing";
+    if (text.includes("music") || text.includes("audio") || text.includes("sound")) return "music,studio";
+    if (text.includes("food") || text.includes("cook") || text.includes("chef") || text.includes("culinary")) return "cooking,chef";
+    if (text.includes("astrology") || text.includes("space") || text.includes("astronom")) return "astrology,stars";
+    if (text.includes("photo") || text.includes("camera") || text.includes("video")) return "photography,camera";
+    
+    // Fallback to the first significant word plus a generic professional tag
+    const firstWord = text.split(/[ /]/)[0];
+    return encodeURIComponent(firstWord) + ",professional";
+};
+
 export function InteractiveCareerOrbits({ careers }: InteractiveCareerOrbitsProps) {
     // Start at a high number to avoid negative modulo issues
     const [offset, setOffset] = useState(10000); 
@@ -38,15 +62,15 @@ export function InteractiveCareerOrbits({ careers }: InteractiveCareerOrbitsProp
     });
 
     return (
-        <div className="absolute right-[-240px] top-24 hidden 2xl:flex flex-col w-32 z-10 perspective-[1000px]">
+        <div className="absolute right-[-240px] top-[272px] hidden 2xl:flex flex-col w-32 z-10 perspective-[1000px]">
             <AnimatePresence initial={false}>
                 {visibleItems.map(({ career, uniqueKey, visualIndex }) => {
                     // Generate subtle colors for fallback and glowing
                     const hue1 = (career.id.charCodeAt(0) * 20) % 360 || (visualIndex * 60);
                     const hue2 = (hue1 + 60) % 360;
                     
-                    // Use LoremFlickr for semantic professional image results based on the career title
-                    const searchTerms = encodeURIComponent((career.domain || career.title).split(' ')[0].toLowerCase());
+                    // Select a profession-specific image via loremflickr
+                    const searchTerms = getProfessionSearchTerms(career.title, career.domain);
                     const imageUrl = `https://loremflickr.com/400/400/${searchTerms}?lock=${career.id.charCodeAt(0) || 1}`;
 
                     return (

@@ -35,7 +35,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
 
     // Keep a live ref to messages to avoid stale closures in handlers
     const messagesRef = useRef<ChatMessage[]>(chatMessages);
-    useEffect(() => { 
+    useEffect(() => {
         messagesRef.current = messages;
         setChatMessages(messages); // Sync local state back to global store
     }, [messages, setChatMessages]);
@@ -157,7 +157,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
         } else {
             setMessages([greetingMsg]);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatMessages, initialMessage, callApi]);
 
     // Auto-scroll
@@ -214,7 +214,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
 
         setIsTyping(true);
         const baseCount = userMessageCount;
-        
+
         // Add a temporary user message so the UI responds instantly
         const tempId = Date.now().toString();
         const rawUserMsg: ChatMessage = {
@@ -232,7 +232,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
                 }
             } as any
         };
-        
+
         const updatedWithTemp = [...messagesRef.current, rawUserMsg];
         setMessages(updatedWithTemp);
         setUserMessageCount(baseCount + 1);
@@ -275,7 +275,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
 
             // Create a hidden prompt variant strictly for the API request so we don't clog the UI
             const apiMsg: ChatMessage = { ...completedUserMsg, content: simulatedUserPrompt };
-            
+
             const conversationMsgs = finalizedMessages.filter(
                 m => !m.metadata?.type || (m.metadata.type as string) !== "greeting"
             ).map(m => m.id === tempId ? apiMsg : m); // Swap the visual msg with the data-rich one
@@ -290,8 +290,8 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
                 content: `Failed to upload: **${file.name}**`,
                 metadata: {
                     ...rawUserMsg.metadata,
-                    data: { 
-                        ...rawUserMsg.metadata?.data, 
+                    data: {
+                        ...rawUserMsg.metadata?.data,
                         status: "error",
                         error: err.message || "Failed to process file"
                     }
@@ -339,7 +339,7 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
     const isBlocked = !user && userMessageCount >= FREE_MESSAGE_LIMIT;
 
     return (
-        <div className="relative flex flex-col h-[80vh] w-full max-w-5xl mx-auto bg-card border border-border rounded-xl overflow-hidden animate-fade-in shadow-lg">
+        <div className="relative flex flex-col h-[80vh] w-full max-w-[1600px] mx-auto bg-card border border-border rounded-xl overflow-hidden animate-fade-in shadow-lg">
 
             {/* Login Overlay */}
             {showOverlay && (
@@ -350,32 +350,46 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
             )}
 
             {/* Header */}
-            <div className="px-6 py-4 border-b border-border bg-secondary/30 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center border border-primary/10">
-                        <Sparkles className="h-4 w-4 text-primary" />
+            <div className="px-6 py-4 bg-gradient-to-r from-blue-700 to-blue-500 rounded-t-xl flex items-center justify-between border-b-0 shadow-sm relative overflow-hidden">
+                {/* Subtle curve at bottom to match the exact design vibe */}
+                <div className="absolute -bottom-4 left-0 right-0 h-4 bg-background rounded-t-[100%] scale-105 z-0 pointer-events-none opacity-20"></div>
+
+                <div className="flex items-center gap-4 relative z-10">
+                    <div className="h-12 w-12 rounded-full bg-emerald-400 overflow-hidden shrink-0 border-2 border-white/20 shadow-inner flex items-center justify-center">
+                        {/* We can use the user's uploaded avatar here later or keep a generic stylish one. The reference had a person. */}
+                        <img src={`https://loremflickr.com/100/100/face,person?lock=105`} alt="Career Assistant" className="w-full h-full object-cover" />
                     </div>
                     <div>
-                        <h2 className="text-sm font-semibold text-foreground tracking-tight">Career Assistant</h2>
-                        <p className="text-[10px] text-emerald-600 uppercase tracking-widest font-semibold flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-                            Online · Powered by Gemini
-                        </p>
+                        <p className="text-xs text-blue-100 font-medium mb-0.5">Chat with</p>
+                        <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                            Career Assistant
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white opacity-80 mt-1 cursor-pointer hover:opacity-100 transition-opacity">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </h2>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="flex items-center gap-4 relative z-10">
                     {messagesRemaining !== null && (
-                        <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border ${
-                            messagesRemaining <= 3
-                                ? "text-amber-600 bg-amber-50 border-amber-200"
-                                : "text-muted-foreground bg-secondary border-border"
-                        }`}>
-                            {messagesRemaining <= 3 && <Lock className="h-3 w-3" />}
-                            {messagesRemaining} free {messagesRemaining === 1 ? "message" : "messages"} left
+                        <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-white/20 bg-black/10 text-white backdrop-blur-sm shadow-inner`}>
+                            {messagesRemaining <= 3 && <Lock className="h-3 w-3 text-white/80" />}
+                            {messagesRemaining} free left
                         </div>
                     )}
-                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-foreground gap-1.5 text-xs">
-                        <RotateCcw className="h-3.5 w-3.5" /> New Chat
+
+                    {/* Ellipsis Menu Icon from Reference */}
+                    <button className="text-white/80 hover:text-white transition-colors p-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <circle cx="12" cy="5" r="1"></circle>
+                            <circle cx="12" cy="19" r="1"></circle>
+                        </svg>
+                    </button>
+
+                    {/* The new chat reset can be moved to the ellipsis menu later, keeping it here styled differently for now */}
+                    <Button variant="ghost" size="icon" onClick={handleReset} className="text-white hover:bg-white/20 transition-all rounded-full h-9 w-9" title="New Chat">
+                        <RotateCcw className="h-4 w-4" />
                     </Button>
                 </div>
             </div>

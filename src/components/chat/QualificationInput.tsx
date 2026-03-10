@@ -115,7 +115,7 @@ export function QualificationInput({ onSubmit }: QualificationInputProps) {
                     disabled={mode === "text" ? !textInput.trim() || isSubmitting : !degree.trim() || !stream.trim() || isSubmitting}
                     className="bg-primary hover:bg-primary/90 text-white gap-2 transition-all w-full sm:w-auto mt-4"
                 >
-                    {isSubmitting ? "Starting..." : "Start Analysis"} <ChevronRight className="h-4 w-4" />
+                    {isSubmitting ? "Saving..." : "Save & Continue"} <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
         </div>

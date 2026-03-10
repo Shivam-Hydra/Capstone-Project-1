@@ -167,6 +167,7 @@ export default function ProfilePage() {
 
     return (
         <ProtectedRoute>
+            <>
             {/* Ambient background glow */}
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 dark:bg-blue-500/5 blur-[120px]"></div>
@@ -174,33 +175,38 @@ export default function ProfilePage() {
             </div>
 
             <div className="w-full relative min-h-[calc(100vh-6rem)] pb-24 mt-8">
-                {/* Dynamic Banner Poster */}
-                <div className="w-full h-72 md:h-80 relative overflow-hidden bg-slate-100 dark:bg-slate-900 border-b border-black/5 dark:border-white/5">
-                    {localPhotoURL ? (
-                        <>
-                            {/* Dynamic background using deeply blurred profile picture */}
-                            <div 
-                                className="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60 blur-3xl transform scale-125 saturate-150 transition-all duration-1000"
-                                style={{ backgroundImage: `url(${localPhotoURL})` }}
-                            />
-                            {/* Overlay subtle grain or noise */}
-                            <div className="absolute inset-0 bg-black/5 dark:bg-black/20 mix-blend-overlay" />
-                        </>
-                    ) : (
-                        <>
-                            {/* Default Designed Poster Mesh Gradient */}
-                            <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-950">
-                                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[150%] bg-blue-600/50 blur-[100px] rounded-full mix-blend-screen" />
-                                <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[120%] bg-purple-600/40 blur-[120px] rounded-full mix-blend-screen" />
-                                <div className="absolute top-[20%] right-[20%] w-[30%] h-[100%] bg-indigo-500/40 blur-[80px] rounded-full mix-blend-screen animate-pulse" />
-                            </div>
-                        </>
-                    )}
-                    {/* Gradient overlay to smoothly transition to the background color at the bottom of the poster */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent dark:from-slate-950 dark:via-slate-950/60" />
-                </div>
+                
+                {/* 
+                  Container for Banner AND Header content.
+                  By grouping them, the banner becomes a background layer 
+                  and the header content sits exactly in the lower half of it. 
+                */}
+                <div className="relative w-full pt-[72px] md:pt-[104px]"> 
+                    
+                    {/* Dynamic Banner Poster (Absolute Base Layer) */}
+                    <div className="absolute top-0 left-0 w-full h-[232px] md:h-[264px] bg-slate-100 dark:bg-slate-900 border-b border-black/5 dark:border-white/5 overflow-hidden z-0">
+                        {localPhotoURL ? (
+                            <>
+                                <div 
+                                    className="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60 blur-3xl transform scale-125 saturate-150 transition-all duration-1000"
+                                    style={{ backgroundImage: `url(${localPhotoURL})` }}
+                                />
+                                <div className="absolute inset-0 bg-black/5 dark:bg-black/20 mix-blend-overlay" />
+                            </>
+                        ) : (
+                            <>
+                                <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-950">
+                                    <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[150%] bg-blue-600/50 blur-[100px] rounded-full mix-blend-screen" />
+                                    <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[120%] bg-purple-600/40 blur-[120px] rounded-full mix-blend-screen" />
+                                    <div className="absolute top-[20%] right-[20%] w-[30%] h-[100%] bg-indigo-500/40 blur-[80px] rounded-full mix-blend-screen animate-pulse" />
+                                </div>
+                            </>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent dark:from-slate-950 dark:via-slate-950/60" />
+                    </div>
 
-                <div className="container mx-auto px-4 max-w-6xl relative -mt-20 md:-mt-24 z-10">
+                    {/* Header Content (Foreground Layer) */}
+                    <div className="container mx-auto px-4 max-w-6xl relative z-10 w-full">
                     
                     {/* The Interactive 3-Circle Career Orbit component positioned absolutely right relative to this container */}
                     <InteractiveCareerOrbits careers={useUserStore.getState().chatCareers} />
@@ -210,15 +216,15 @@ export default function ProfilePage() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="flex flex-col md:flex-row md:items-end gap-6 mb-16 text-center md:text-left relative"
+                        className="flex flex-col md:flex-row md:items-end gap-6 mb-8 text-center md:text-left relative"
                     >
-                        {/* Avatar */}
+                        {/* Avatar (h-40 = 160px) */}
                         <div className="relative group mx-auto md:mx-0 shrink-0">
                             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                             {/* border-background ensures it cleanly cuts out of the banner behind it */}
                             <button 
                                 onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
-                                className="relative h-40 w-40 bg-background border-[8px] border-background dark:border-slate-950 rounded-full flex items-center justify-center shadow-2xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300 focus:outline-none"
+                                className="relative h-40 w-40 bg-slate-900 border-[6px] border-white/10 dark:border-white/10 rounded-full flex items-center justify-center shadow-[0_0_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden group-hover:scale-[1.02] transition-transform duration-300 focus:outline-none"
                             >
                                 {uploadingAvatar && (
                                     <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center backdrop-blur-sm">
@@ -270,15 +276,18 @@ export default function ProfilePage() {
                         </div>
 
                         {/* Name Info block shifted slightly up to align logically with avatar */}
-                        <div className="mb-2 md:mb-6 flex-1">
-                            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 mb-2 drop-shadow-sm">
+                        <div className="mb-2 md:mb-6 flex-1 text-white drop-shadow-lg">
+                            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2 drop-shadow-xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                                 {name || "Explorer"}
                             </h1>
-                            <p className="text-lg text-muted-foreground font-medium flex items-center justify-center md:justify-start gap-2">
-                                <Mail className="h-4 w-4 text-blue-500" /> {user?.email}
+                            <p className="text-lg font-medium flex items-center justify-center md:justify-start gap-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] text-white/90">
+                                <Mail className="h-4 w-4 text-blue-400" /> {user?.email}
                             </p>
                         </div>
                     </motion.div>
+
+                    {/* Spacer to replace the negative margin eaten by pulling the header up */}
+                    <div className="h-16 md:h-20"></div>
 
                 {/* Grid Layout */}
                 <motion.div 
@@ -423,9 +432,12 @@ export default function ProfilePage() {
                             </div>
                         </motion.div>
                     )}
-                </motion.div>
-                </div>
-            </div>
+                </motion.div> {/* End Grid Layout */}
+                
+                </div> {/* End Foreground container (line 208) */}
+                </div> {/* End Banner AND Header content wrapper (line 183) */}
+            </div> {/* End Page Wrapper (line 176) */}
+            
             {/* View Avatar Modal */}
             {viewingAvatar && localPhotoURL && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in zoom-in duration-300">
@@ -442,7 +454,7 @@ export default function ProfilePage() {
                     />
                 </div>
             )}
-
+            </>
         </ProtectedRoute>
     );
 }

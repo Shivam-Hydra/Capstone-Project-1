@@ -23,7 +23,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
         };
 
         return (
-            <div className="flex gap-4 w-full max-w-4xl justify-start">
+            <div className="flex gap-4 w-full max-w-[95%] justify-start">
                 {/* AI Avatar */}
                 <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 mt-1">
                     <span className="text-[12px] font-black tracking-tighter text-blue-600">AI</span>
@@ -33,7 +33,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
 
                     {/* Analysis text */}
                     {analysis && (
-                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-secondary/60 text-foreground w-full bubble-tail-left relative">
+                        <div className="px-6 py-4 rounded-2xl text-[15px] bg-secondary/60 text-foreground bubble-tail-left relative w-fit max-w-full">
                             <p className="leading-relaxed">{analysis}</p>
                         </div>
                     )}
@@ -44,7 +44,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 pl-1">
                                 Career Options
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                                 {careers.map((career) => (
                                     <CareerCard
                                         key={career.id}
@@ -62,7 +62,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 pl-1">
                                 Recommended Courses & Certifications
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                                 {courses.map((course) => (
                                     <CourseCard key={course.id} course={course} />
                                 ))}
@@ -83,7 +83,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
 
     // ── Standard text message (user bubble or plain AI text) ─────────────
     return (
-        <div className={cn("flex gap-4 w-full max-w-4xl group", isUser ? "justify-end ml-auto items-center" : "justify-start")}>
+        <div className={cn("flex gap-4 w-full max-w-[95%] group", isUser ? "justify-end ml-auto items-center" : "justify-start")}>
             {!isUser && (
                 <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 mt-1">
                     <span className="text-[12px] font-black tracking-tighter text-blue-600">AI</span>
@@ -109,7 +109,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                         "px-4 py-3 rounded-2xl shadow-sm transition-all duration-200 flex items-center gap-3 min-w-[200px] max-w-full relative",
                         isUser
                             ? (message.metadata.data?.status === "error" ? "bg-red-600 text-white bubble-tail-right" : "bg-blue-600 text-white bubble-tail-right")
-                            : (message.metadata.data?.status === "error" ? "bg-red-50 border border-red-200 text-red-700 bubble-tail-left" : "bg-secondary border-transparent text-secondary-foreground w-full bubble-tail-left"),
+                            : (message.metadata.data?.status === "error" ? "bg-red-50 border border-red-200 text-red-700 bubble-tail-left" : "bg-secondary border-transparent text-secondary-foreground w-fit max-w-full bubble-tail-left"),
                     )}>
                         <div className={cn(
                             "p-2.5 rounded-xl flex items-center justify-center shrink-0",
@@ -156,7 +156,7 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                         "px-6 py-4 rounded-2xl text-[15px] shadow-sm transition-all duration-200 relative",
                         isUser
                             ? "bg-blue-600 text-white bubble-tail-right"
-                            : "bg-secondary border-transparent text-secondary-foreground w-full bubble-tail-left"
+                            : "bg-secondary border-transparent text-secondary-foreground w-fit max-w-full bubble-tail-left"
                     )}>
                         <div className="whitespace-pre-wrap leading-relaxed">
                             {message.content}
