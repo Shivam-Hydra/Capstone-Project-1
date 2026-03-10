@@ -50,10 +50,10 @@ export function Navbar() {
     return (
         <nav
             className={cn(
-                "fixed top-0 w-full z-50 transition-all duration-300 border-b",
+                "fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-[1600px] z-50 transition-all duration-500",
                 scrolled
-                    ? "bg-white/90 backdrop-blur-xl border-blue-100 shadow-sm py-2"
-                    : "bg-white/50 backdrop-blur-md border-transparent py-4"
+                    ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-blue-100/50 dark:border-white/10 shadow-2xl py-2 rounded-[32px]"
+                    : "bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/40 dark:border-white/5 py-4 rounded-[32px]"
             )}
         >
             <div className="container mx-auto px-6 md:px-12 flex items-center justify-between h-16">
