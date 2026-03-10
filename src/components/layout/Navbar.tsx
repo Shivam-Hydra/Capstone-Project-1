@@ -8,13 +8,11 @@ import { Menu, Sparkles, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/lib/auth-context";
-import { useUserStore } from "@/lib/store";
 
 export function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const { user, loading, logout } = useAuth();
-    const { profile } = useUserStore();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
@@ -45,15 +43,13 @@ export function Navbar() {
         ? user.displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
         : user?.email?.[0].toUpperCase() ?? "U";
 
-    const photoURL = profile?.photoURL || user?.photoURL;
-
     return (
         <nav
             className={cn(
-                "fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-[1600px] z-50 transition-all duration-500",
+                "fixed top-0 w-full z-50 transition-all duration-300 border-b",
                 scrolled
-                    ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-blue-100/50 dark:border-white/10 shadow-2xl py-2 rounded-[32px]"
-                    : "bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/40 dark:border-white/5 py-4 rounded-[32px]"
+                    ? "bg-white/90 backdrop-blur-xl border-blue-100 shadow-sm py-2"
+                    : "bg-white/50 backdrop-blur-md border-transparent py-4"
             )}
         >
             <div className="container mx-auto px-6 md:px-12 flex items-center justify-between h-16">
@@ -110,12 +106,8 @@ export function Navbar() {
                                 <div className="flex items-center gap-3">
                                     <Link href="/profile">
                                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer group">
-                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold overflow-hidden">
-                                                {photoURL ? (
-                                                    <img src={photoURL} alt="User" className="w-full h-full object-cover" />
-                                                ) : (
-                                                    initials
-                                                )}
+                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+                                                {initials}
                                             </div>
                                             <span className="text-sm font-medium text-slate-700 group-hover:text-blue-700 max-w-[100px] truncate">
                                                 {user.displayName ?? user.email}
@@ -152,13 +144,16 @@ export function Navbar() {
                     )}
                 </div>
 
-                {/* Mobile Toggle */}
-                <button
-                    className="md:hidden p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                    <Menu className="h-6 w-6" />
-                </button>
+                {/* Mobile Actions */}
+                <div className="md:hidden flex items-center gap-2">
+                    <ModeToggle />
+                    <button
+                        className="p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        <Menu className="h-6 w-6" />
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Menu */}
@@ -179,15 +174,8 @@ export function Navbar() {
                         {user ? (
                             <>
                                 <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button variant="ghost" className="w-full justify-start gap-2 px-2">
-                                        <div className="h-6 w-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
-                                            {photoURL ? (
-                                                <img src={photoURL} alt="User" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <User className="h-3 w-3" />
-                                            )}
-                                        </div>
-                                        <span className="truncate">{user.displayName ?? user.email}</span>
+                                    <Button variant="ghost" className="w-full justify-start gap-2">
+                                        <User className="h-4 w-4" /> {user.displayName ?? user.email}
                                     </Button>
                                 </Link>
                                 <Button
