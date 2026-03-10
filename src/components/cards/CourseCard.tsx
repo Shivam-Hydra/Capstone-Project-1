@@ -29,12 +29,12 @@ export function CourseCard({ course }: CourseCardProps) {
                 style={{ backgroundImage: `url('${bgImage}')` }}
             />
             
-            {/* Heavy Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/10" />
+            {/* Heavy Gradient Overlay: White in light mode, Black in dark mode */}
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/10 dark:from-slate-900 dark:via-slate-900/80 dark:to-slate-900/10" />
 
             {/* Platform Tag (Top Right) */}
-            <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/20">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-white">{course.provider}</span>
+            <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-white/50 dark:bg-black/30 backdrop-blur-md border border-black/10 dark:border-white/20 shadow-sm">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-slate-800 dark:text-white">{course.provider}</span>
             </div>
 
             {/* Content Container positioned at the bottom */}
@@ -42,46 +42,46 @@ export function CourseCard({ course }: CourseCardProps) {
                 
                 {/* Title and Short Description */}
                 <div className="mb-4 mt-auto">
-                    <h3 className="text-xl font-bold text-white tracking-tight leading-tight line-clamp-2">{course.title}</h3>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight line-clamp-2">{course.title}</h3>
                 </div>
 
                 {/* Glassmorphic Pills Container */}
                 <div className="flex flex-wrap gap-2 mb-6">
                     {/* Rating Pill */}
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/30">
-                        <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                        <span className="text-amber-100 text-xs font-bold">{course.rating.toFixed(1)}</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-500/20 backdrop-blur-md border border-amber-200 dark:border-amber-400/30 shadow-sm">
+                        <Star className="h-3 w-3 text-amber-500 fill-amber-500 dark:text-amber-400 dark:fill-amber-400" />
+                        <span className="text-amber-800 dark:text-amber-100 text-xs font-bold">{course.rating.toFixed(1)}</span>
                     </div>
 
                     {/* Level Pill */}
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                        <BookOpen className="h-3.5 w-3.5 text-white/70" />
-                        <span className="text-white text-xs font-semibold">{course.level}</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
+                        <BookOpen className="h-3.5 w-3.5 text-slate-600 dark:text-white/70" />
+                        <span className="text-slate-800 dark:text-white text-xs font-semibold">{course.level}</span>
                     </div>
                     
                     {/* Duration Pill */}
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                        <Clock className="h-3.5 w-3.5 text-white/70" />
-                        <span className="text-white text-xs font-semibold">{course.duration}</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
+                        <Clock className="h-3.5 w-3.5 text-slate-600 dark:text-white/70" />
+                        <span className="text-slate-800 dark:text-white text-xs font-semibold">{course.duration}</span>
                     </div>
                 </div>
 
                 {/* Tags section (optional, keeping it minimal like the reference to avoid clutter) */}
-                <div className="flex flex-wrap gap-1.5 mb-5 opacity-80">
+                <div className="flex flex-wrap gap-1.5 mb-5 opacity-90 dark:opacity-80">
                     {course.tags.slice(0, 3).map((tag, i) => (
-                        <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-white/5 text-white/80 border border-white/10 px-2 py-1 rounded-md">
+                        <span key={i} className="text-[10px] uppercase tracking-wider font-semibold bg-black/5 dark:bg-white/5 text-slate-700 dark:text-white/80 border border-black/10 dark:border-white/10 px-2 py-1 rounded-md shadow-sm">
                             {tag}
                         </span>
                     ))}
                     {course.tags.length > 3 && (
-                        <span className="text-[10px] font-bold bg-white/5 text-white/80 border border-white/10 px-2 py-1 rounded-md">
+                        <span className="text-[10px] font-bold bg-black/5 dark:bg-white/5 text-slate-700 dark:text-white/80 border border-black/10 dark:border-white/10 px-2 py-1 rounded-md shadow-sm">
                             +{course.tags.length - 3}
                         </span>
                     )}
                 </div>
 
                 {/* Call to Action Button */}
-                <Button className="w-full bg-white hover:bg-slate-100 text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl" asChild>
+                <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl" asChild>
                     <a href={course.url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
                         View Course <ExternalLink className="h-4 w-4" />
                     </a>

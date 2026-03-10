@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { CareerCard } from "@/components/cards/CareerCard";
 import { CourseCard } from "@/components/cards/CourseCard";
 import { RoadmapView } from "@/components/cards/RoadmapView";
-import { FileText, Loader2 } from "lucide-react";
+import { FileText, Loader2, RefreshCw } from "lucide-react";
 
 interface MessageBubbleProps {
     message: ChatMessage;
@@ -83,11 +83,21 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
 
     // ── Standard text message (user bubble or plain AI text) ─────────────
     return (
-        <div className={cn("flex gap-4 w-full max-w-4xl", isUser ? "justify-end ml-auto" : "justify-start")}>
+        <div className={cn("flex gap-4 w-full max-w-4xl group", isUser ? "justify-end ml-auto items-center" : "justify-start")}>
             {!isUser && (
                 <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 mt-1">
                     <span className="text-[12px] font-black tracking-tighter text-blue-600">AI</span>
                 </div>
+            )}
+
+            {isUser && message.content && (
+                <button
+                    onClick={() => onAction?.('resend', message.content)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-muted-foreground hover:text-primary rounded-full hover:bg-secondary shrink-0"
+                    title="Resend this message"
+                >
+                    <RefreshCw className="h-4 w-4" />
+                </button>
             )}
 
             <div className={cn(

@@ -4,6 +4,7 @@ import { Career, Course } from "@/types";
 import { motion } from "framer-motion";
 import { Briefcase, BookOpen, Star, Clock, Trophy, Target } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface CurvedRoadmapProps {
@@ -80,7 +81,7 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
         
         // End below the last node
         const lastP = points[points.length - 1];
-        pathString += ` L ${lastP.x} ${lastP.y + 100}`;
+        pathString += ` L ${lastP.x} ${lastP.y + 500}`;
     }
 
     // Animation variants
@@ -146,46 +147,52 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                             onMouseEnter={() => setHoveredIndex(i)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
-                            {/* Node Icon on the path */}
+                            {/* Node Bubble on the path */}
                             <div className={cn(
                                 "roadmap-icon absolute md:left-1/2 md:-translate-x-1/2 left-8 -translate-x-1/2",
-                                "w-12 h-12 rounded-full border-4 flex items-center justify-center bg-white shadow-xl z-20 transition-transform duration-300",
-                                isCourse ? "border-purple-500 text-purple-600" : "border-blue-500 text-blue-600",
-                                hoveredIndex === i && "scale-125"
-                            )}>
-                                {isCourse ? <BookOpen className="w-5 h-5" /> : <Briefcase className="w-5 h-5" />}
-                            </div>
+                                "w-4 h-4 rounded-full border-[3px] bg-background shadow-lg z-20 transition-transform duration-300",
+                                isCourse ? "border-purple-500" : "border-blue-500",
+                                hoveredIndex === i && "scale-150"
+                            )} />
 
-                            {/* Card Content */}
+                            {/* Card Content - Redesigned */}
                             <div className={cn(
-                                "w-full md:w-[45%] bg-slate-900 border-slate-800 shadow-2xl rounded-2xl p-6 border transition-all duration-300 text-white dark:bg-white dark:border-slate-200 dark:shadow-md dark:text-slate-900",
+                                "relative w-full md:w-[45%] bg-slate-900 border-slate-800 shadow-2xl rounded-[32px] pt-14 pb-8 px-8 border transition-all duration-300 text-white flex flex-col items-center text-center dark:bg-white dark:border-slate-200 dark:shadow-md dark:text-slate-900",
                                 hoveredIndex === i ? (isCourse ? "scale-[1.02] shadow-purple-500/30 dark:shadow-purple-500/20" : "scale-[1.02] shadow-blue-500/30 dark:shadow-blue-500/20") : ""
                             )}>
-                                <div className="flex items-center gap-2 mb-3">
+                                {/* Overflowing Top Anchor Icon */}
+                                <div className={cn(
+                                    "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 flex items-center justify-center shadow-2xl shadow-black/50 border-background backdrop-blur-xl",
+                                    isCourse ? "bg-purple-600/90 text-white" : "bg-blue-600/90 text-white"
+                                )}>
+                                    {isCourse ? <BookOpen className="w-7 h-7" /> : <Briefcase className="w-7 h-7" />}
+                                </div>
+
+                                <div className="flex flex-wrap justify-center items-center gap-2 mb-4">
                                     <span className={cn(
-                                        "text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider",
-                                        isCourse ? "bg-purple-900/60 text-purple-200 dark:bg-purple-100 dark:text-purple-700" : "bg-blue-900/60 text-blue-200 dark:bg-blue-100 dark:text-blue-700"
+                                        "text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest",
+                                        isCourse ? "bg-purple-900/80 text-purple-200 dark:bg-purple-100 dark:text-purple-700" : "bg-blue-900/80 text-blue-200 dark:bg-blue-100 dark:text-blue-700"
                                     )}>
                                         {isCourse ? "Course Recommendation" : "Career Path"}
                                     </span>
                                     {isCourse && data.level && (
-                                        <span className="text-xs bg-slate-700 text-slate-200 dark:bg-slate-100 dark:text-slate-600 px-2 py-1 rounded-full font-medium">
+                                        <span className="text-[10px] bg-slate-700/80 text-slate-200 dark:bg-slate-100 dark:text-slate-600 px-3 py-1.5 rounded-full font-bold uppercase tracking-widest">
                                             {data.level}
                                         </span>
                                     )}
                                     {!isCourse && data.matchScore && (
-                                        <span className="text-xs bg-emerald-900/50 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700 px-2 py-1 rounded-full font-bold flex items-center gap-1">
+                                        <span className="text-[10px] bg-emerald-900/80 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-widest flex items-center gap-1">
                                             <Target className="w-3 h-3" /> {data.matchScore}% Match
                                         </span>
                                     )}
                                 </div>
                                 
-                                <h3 className="text-xl font-bold text-white dark:text-slate-900 mb-2 leading-tight">{data.title}</h3>
+                                <h3 className="text-2xl font-bold text-white dark:text-slate-900 mb-4 leading-tight tracking-tight">{data.title}</h3>
                                 
                                 {isCourse ? (
                                     <>
-                                        {data.description && <p className="text-sm text-slate-300 dark:text-slate-600 mb-4 line-clamp-2 md:line-clamp-none leading-relaxed">{data.description}</p>}
-                                        <div className="flex flex-wrap items-center gap-5 text-sm text-slate-400 dark:text-slate-500">
+                                        {data.description && <p className="text-sm text-slate-300 dark:text-slate-600 mb-6 leading-relaxed px-2">{data.description}</p>}
+                                        <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-slate-400 dark:text-slate-500 mb-8 border-t border-slate-700/50 dark:border-slate-200 w-full pt-4">
                                             <div className="flex items-center gap-1.5 font-medium text-slate-200 dark:text-slate-800">
                                                 <Trophy className="w-4 h-4 text-amber-500" /> {data.provider}
                                             </div>
@@ -196,21 +203,44 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                                                 <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" /> {data.duration}
                                             </div>
                                         </div>
+                                        <a 
+                                            href={(data as Course).url} 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className={cn(
+                                                "w-full max-w-[200px] h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 active:scale-95 shadow-lg",
+                                                "bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:shadow-purple-500/25"
+                                            )}
+                                        >
+                                            View Course
+                                        </a>
                                     </>
                                 ) : (
                                     <>
-                                        <p className="text-sm text-slate-300 dark:text-slate-600 mb-4">{data.description}</p>
-                                        <div className="flex items-center gap-4 text-sm">
-                                            <div>
-                                                <p className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">Salary Range</p>
+                                        <p className="text-sm text-slate-300 dark:text-slate-600 mb-6 px-2">{data.description}</p>
+                                        <div className="flex justify-center items-center gap-8 text-sm mb-8 bg-slate-800/50 dark:bg-slate-100/50 w-full py-4 rounded-2xl">
+                                            <div className="flex flex-col items-center">
+                                                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-1">Salary Range</p>
                                                 <p className="font-bold text-slate-200 dark:text-slate-800">{data.salary}</p>
                                             </div>
-                                            <div className="h-8 w-px bg-slate-700 dark:bg-slate-300"></div>
-                                            <div>
-                                                <p className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">Demand</p>
-                                                <p className="font-bold text-emerald-400 dark:text-emerald-600">{data.growth}</p>
+                                            <div className="h-10 w-px bg-slate-700 dark:bg-slate-300"></div>
+                                            <div className="flex flex-col items-center">
+                                                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-1">Demand</p>
+                                                <p className="font-bold text-emerald-400 dark:text-emerald-600 flex items-center gap-1">
+                                                    {data.growth} <span className="text-[10px]">🔥</span>
+                                                </p>
                                             </div>
                                         </div>
+                                        <Link href={`/roadmap/${data.id}`} className="w-full flex justify-center">
+                                            <button 
+                                                className={cn(
+                                                    "w-full max-w-[200px] h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 active:scale-95 shadow-lg mt-auto",
+                                                    "bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:shadow-blue-500/25"
+                                                )}
+                                            >
+                                                View Roadmap
+                                            </button>
+                                        </Link>
                                     </>
                                 )}
                             </div>

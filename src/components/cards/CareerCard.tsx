@@ -59,18 +59,18 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
                     style={{ backgroundImage: `url('${bgImage}')` }}
                 />
                 
-                {/* Heavy Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/10" />
+                {/* Heavy Gradient Overlay: White in light mode, Black in dark mode */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/10 dark:from-slate-900 dark:via-slate-900/80 dark:to-slate-900/10" />
 
                 {/* Bookmark Icon */}
                 <button
                     onClick={handleBookmark}
                     disabled={bookmarking}
-                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-black/20 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300"
+                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/50 dark:bg-black/20 backdrop-blur-md border border-black/10 dark:border-white/20 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-300 shadow-sm"
                 >
                     {isSaved
-                        ? <BookmarkCheck className="h-5 w-5 text-white drop-shadow-md" />
-                        : <Bookmark className="h-5 w-5 text-white/90 hover:text-white transition-colors" />
+                        ? <BookmarkCheck className="h-5 w-5 text-blue-600 dark:text-white drop-shadow-sm dark:drop-shadow-md" />
+                        : <Bookmark className="h-5 w-5 text-slate-700 dark:text-white/90 hover:text-black dark:hover:text-white transition-colors" />
                     }
                 </button>
 
@@ -79,39 +79,39 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
                     
                     {/* Titles */}
                     <div className="mb-3 mt-auto">
-                        <h3 className="text-2xl font-bold text-white tracking-tight leading-tight">{career.title}</h3>
-                        <p className="text-sm text-white/70 mt-1 font-medium tracking-wide">{career.domain}</p>
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">{career.title}</h3>
+                        <p className="text-sm text-slate-700 dark:text-white/70 mt-1 font-medium tracking-wide">{career.domain}</p>
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm text-white/80 line-clamp-3 leading-relaxed mb-4">
+                    <p className="text-sm text-slate-600 dark:text-white/80 line-clamp-3 leading-relaxed mb-4">
                         {career.description}
                     </p>
 
                     {/* Glassmorphic Pills Container */}
                     <div className="flex flex-wrap gap-2 mb-6">
                         {/* Salary Pill */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                            <span className="text-white text-xs font-semibold">₹{(career.salaryRange.min / 100000).toFixed(1)}L - ${(career.salaryRange.max / 100000).toFixed(1)}L</span>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
+                            <span className="text-slate-800 dark:text-white text-xs font-semibold">₹{(career.salaryRange.min / 100000).toFixed(1)}L - ${(career.salaryRange.max / 100000).toFixed(1)}L</span>
                         </div>
                         
                         {/* Growth Pill */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                            <Star className={`h-3 w-3 ${career.outlook === "Growing" ? "text-emerald-400 fill-emerald-400" : career.outlook === "Stable" ? "text-amber-400 fill-amber-400" : "text-blue-400 fill-blue-400"}`} />
-                            <span className="text-white text-xs font-semibold">{career.outlook}</span>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
+                            <Star className={`h-3 w-3 ${career.outlook === "Growing" ? "text-emerald-500 fill-emerald-500" : career.outlook === "Stable" ? "text-amber-500 fill-amber-500" : "text-blue-500 fill-blue-500"}`} />
+                            <span className="text-slate-800 dark:text-white text-xs font-semibold">{career.outlook}</span>
                         </div>
 
                         {/* Match Score Pill */}
                         {career.matchScore && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md border border-blue-400/30">
-                                <span className="text-blue-200 text-xs font-bold">{career.matchScore}% Match</span>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-500/20 backdrop-blur-md border border-blue-200 dark:border-blue-400/30 shadow-sm">
+                                <span className="text-blue-800 dark:text-blue-200 text-xs font-bold">{career.matchScore}% Match</span>
                             </div>
                         )}
                     </div>
 
                     {/* Match Reason (Only if exists) */}
                     {career.matchReason && (
-                        <p className="text-[12px] text-white/70 italic line-clamp-2 mb-4 px-1">
+                        <p className="text-[12px] text-slate-600 dark:text-white/70 italic line-clamp-2 mb-4 px-1">
                             {career.matchReason}
                         </p>
                     )}
@@ -119,7 +119,7 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
                     {/* Call to Action Button */}
                     <Link href={`/roadmap/${career.id}`} className="w-full mt-auto">
                         <Button
-                            className="w-full bg-white hover:bg-slate-100 text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl"
+                            className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl"
                         >
                             View Roadmap
                         </Button>

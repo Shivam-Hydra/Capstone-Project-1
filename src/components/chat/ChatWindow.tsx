@@ -312,7 +312,28 @@ export function ChatWindow({ initialMessage }: ChatWindowProps) {
         clearChat(); // Clear global store
     };
 
-    const handleAction = (_action: string, _data?: any) => {};
+    const handleAction = (action: string, data?: any) => {
+        if (action === "resend" && typeof data === "string") {
+            if (isTyping) return;
+            if (!user && userMessageCount >= FREE_MESSAGE_LIMIT) { setShowOverlay(true); return; }
+
+            const userMsg: ChatMessage = {
+                id: Date.now().toString(),
+                role: "user",
+                content: data,
+                timestamp: new Date(),
+            };
+
+            const updated = [...messagesRef.current, userMsg];
+            setMessages(updated);
+
+            // Send only real conversation turns (no greeting) to API
+            const conversationMsgs = updated.filter(
+                m => !m.metadata?.type || (m.metadata.type as string) !== "greeting"
+            );
+            callApi(conversationMsgs, userMessageCount);
+        }
+    };
 
     const messagesRemaining = user ? null : Math.max(0, FREE_MESSAGE_LIMIT - userMessageCount);
     const isBlocked = !user && userMessageCount >= FREE_MESSAGE_LIMIT;
