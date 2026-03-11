@@ -12,6 +12,7 @@ export const CAREERS: Career[] = [
         outlook: "Growing",
         requiredSkills: ["React", "Node.js", "TypeScript", "Database Design"],
         matchScore: 95,
+        matchReason: "✓ Programming interest\n✓ Problem solving\n✓ Tech-focused skills"
     },
     {
         id: "c2",
@@ -22,6 +23,7 @@ export const CAREERS: Career[] = [
         outlook: "Growing",
         requiredSkills: ["Python", "Machine Learning", "Statistics", "SQL"],
         matchScore: 88,
+        matchReason: "✓ Strong analytical skills\n✓ Statistics background\n✓ Data visualization"
     },
     {
         id: "c3",
@@ -32,7 +34,41 @@ export const CAREERS: Career[] = [
         outlook: "Stable",
         requiredSkills: ["Agile", "Communication", "Market Research", "UX Basics"],
         matchScore: 75,
+        matchReason: "✓ Leadership potential\n✓ Strategic thinking\n✓ Product lifecycle knowledge"
     },
+    {
+        id: "c4",
+        title: "AI Engineer",
+        description: "Design and implement machine learning models and AI systems.",
+        domain: "Technology",
+        salaryRange: { min: 1000000, max: 2800000, currency: "INR" },
+        outlook: "Growing",
+        requiredSkills: ["PyTorch", "NLP", "Deep Learning", "Algorithms"],
+        matchScore: 92,
+        matchReason: "✓ Math foundations\n✓ Advanced algorithms\n✓ Interest in future tech"
+    },
+    {
+        id: "c5",
+        title: "Cybersecurity Analyst",
+        description: "Protect organizational networks and data from security breaches.",
+        domain: "Security",
+        salaryRange: { min: 700000, max: 2000000, currency: "INR" },
+        outlook: "Growing",
+        requiredSkills: ["Networks", "Ethical Hacking", "Cryptography", "Risk Assessment"],
+        matchScore: 82,
+        matchReason: "✓ Attention to detail\n✓ Security mindset\n✓ Systems knowledge"
+    },
+    {
+        id: "c6",
+        title: "Robotics Engineer",
+        description: "Design and build robots and robotic systems.",
+        domain: "Engineering",
+        salaryRange: { min: 800000, max: 2200000, currency: "INR" },
+        outlook: "Growing",
+        requiredSkills: ["Control Systems", "Embedded C", "C++", "CAD"],
+        matchScore: 78,
+        matchReason: "✓ Physics background\n✓ Hardware interest\n✓ Complex mapping"
+    }
 ];
 
 export const COURSES: Course[] = [

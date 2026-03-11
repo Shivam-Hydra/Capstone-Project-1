@@ -15,6 +15,11 @@ export function DetailedCurvedRoadmap({ roadmap }: DetailedCurvedRoadmapProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Combine steps in order
     const timelineNodes = [
@@ -182,6 +187,8 @@ export function DetailedCurvedRoadmap({ roadmap }: DetailedCurvedRoadmapProps) {
             default: return <MapPin className="w-5 h-5" />;
         }
     };
+
+    if (!mounted) return <div className="min-h-[500px]" />;
 
     return (
         <div className="relative w-full max-w-5xl mx-auto py-20 px-4 flex flex-col items-center" ref={containerRef}>

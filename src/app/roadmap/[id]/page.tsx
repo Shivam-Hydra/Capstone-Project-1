@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useUserStore } from "@/lib/store";
 import { Career, Roadmap } from "@/types";
 import { auth } from "@/lib/firebase";
+import { CAREERS } from "@/lib/mock-data";
 import { Loader2, ArrowLeft, Target, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DetailedCurvedRoadmap } from "@/components/roadmap/DetailedCurvedRoadmap";
@@ -12,19 +13,27 @@ import { DetailedCurvedRoadmap } from "@/components/roadmap/DetailedCurvedRoadma
 export default function RoadmapPage() {
     const params = useParams();
     const router = useRouter();
-    const { chatCareers, savedCareers } = useUserStore();
+    const { chatCareers, savedCareers, recommendedCareers } = useUserStore();
     
     const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const careerId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : null;
 
     useEffect(() => {
         if (!careerId) return;
 
-        // Find the career in local state
-        const career = chatCareers.find(c => c.id === careerId) || savedCareers.find(c => c.id === careerId);
+        // Find the career in local state or mock data
+        const career = chatCareers.find(c => c.id === careerId) || 
+                      savedCareers.find(c => c.id === careerId) ||
+                      recommendedCareers.find(c => c.id === careerId) ||
+                      CAREERS.find(c => c.id === careerId);
 
         if (!career) {
             setError("Career not found. Please navigate back and try again.");
@@ -65,6 +74,8 @@ export default function RoadmapPage() {
 
         generateRoadmap(career);
     }, [careerId, chatCareers, savedCareers]);
+
+    if (!mounted) return null;
 
     return (
         <div className="min-h-[calc(100vh-4rem)] pt-24 pb-12 px-4 animate-fade-in flex flex-col items-center">

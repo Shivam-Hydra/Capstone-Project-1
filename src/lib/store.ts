@@ -6,6 +6,7 @@ interface UserState {
     profile: Partial<UserProfile> | null;
     savedCareers: Career[];
     chatCareers: Career[];          // Latest career recommendations from chat
+    recommendedCareers: Career[];   // Careers from the Careers page
     chatCourses: Course[];          // Latest course recommendations from chat
     chatMessages: ChatMessage[];    // Persisted chat history
     hasCompletedOnboarding: boolean;
@@ -16,6 +17,7 @@ interface UserState {
     saveCareer: (career: Career) => void;
     removeCareer: (careerId: string) => void;
     setChatCareers: (careers: Career[]) => void;
+    setRecommendedCareers: (careers: Career[]) => void;
     setChatCourses: (courses: Course[]) => void; // Save courses from chat response
     
     // Chat Persistence Actions
@@ -30,6 +32,7 @@ export const useUserStore = create<UserState>()(
             profile: null,
             savedCareers: [],
             chatCareers: [],
+            recommendedCareers: [],
             chatCourses: [],
             chatMessages: [],
             hasCompletedOnboarding: false,
@@ -52,6 +55,7 @@ export const useUserStore = create<UserState>()(
             })),
 
             setChatCareers: (careers) => set({ chatCareers: careers }),
+            setRecommendedCareers: (careers) => set({ recommendedCareers: careers }),
             setChatCourses: (courses) => set({ chatCourses: courses }),
 
             addChatMessage: (msg) => set((state) => ({ chatMessages: [...state.chatMessages, msg] })),

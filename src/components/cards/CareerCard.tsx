@@ -2,24 +2,24 @@
 
 import { Career } from "@/types";
 import { Button } from "@/components/ui/button";
-import { TiltCard } from "@/components/ui/TiltCard";
-import { Bookmark, BookmarkCheck, MapPin, Star } from "lucide-react";
+import { Bookmark, BookmarkCheck, MapPin, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useUserStore } from "@/lib/store";
 import { saveCareerToFirestore, removeCareerFromFirestore } from "@/lib/user-service";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CareerCardProps {
     career: Career;
-    onViewRoadmap: (careerId: string) => void;
     isSaved?: boolean;
 }
 
-export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCardProps) {
+export function CareerCard({ career, isSaved = false }: CareerCardProps) {
     const { user } = useAuth();
     const { saveCareer, removeCareer } = useUserStore();
     const [bookmarking, setBookmarking] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleBookmark = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -36,7 +36,6 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
         setBookmarking(false);
     };
 
-    // Deterministic curated Unsplash images for varying abstract tech/modern environments
     const images = [
         "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
         "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80",
@@ -45,87 +44,123 @@ export function CareerCard({ career, onViewRoadmap, isSaved = false }: CareerCar
         "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
         "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80"
     ];
-    // Simple hash to consistently pick the same image for the same career ID
     const charCodeSum = career.id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
     const bgImage = images[charCodeSum % images.length];
 
     return (
-        <TiltCard rotationFactor={5} className="w-full max-w-sm h-full">
-            <div className="relative h-[480px] w-full rounded-[32px] overflow-hidden group shadow-lg transition-transform duration-300 hover:scale-[1.02]">
-                
-                {/* Background Image */}
-                <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                    style={{ backgroundImage: `url('${bgImage}')` }}
-                />
-                
-                {/* Heavy Gradient Overlay: White in light mode, Black in dark mode */}
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-white/10 dark:from-slate-900 dark:via-slate-900/80 dark:to-slate-900/10" />
-
-                {/* Bookmark Icon */}
-                <button
-                    onClick={handleBookmark}
-                    disabled={bookmarking}
-                    className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/50 dark:bg-black/20 backdrop-blur-md border border-black/10 dark:border-white/20 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-300 shadow-sm"
-                >
-                    {isSaved
-                        ? <BookmarkCheck className="h-5 w-5 text-blue-600 dark:text-white drop-shadow-sm dark:drop-shadow-md" />
-                        : <Bookmark className="h-5 w-5 text-slate-700 dark:text-white/90 hover:text-black dark:hover:text-white transition-colors" />
-                    }
-                </button>
-
-                {/* Content Container positioned at the bottom */}
-                <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end z-10 h-full">
+        <motion.div
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            className="w-full md:w-[420px] shrink-0 group relative"
+        >
+            <div className="relative h-[580px] w-full rounded-[40px] overflow-hidden bg-[#1E293B] border border-white/10 shadow-2xl transition-all duration-500 group-hover:shadow-[0_40px_80px_-20px_rgba(37,99,235,0.3)]">
+                {/* Image Header */}
+                <div className="h-48 w-full relative overflow-hidden">
+                    <motion.div 
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url('${bgImage}')` }}
+                        animate={{ 
+                            scale: isHovered ? 1.1 : 1,
+                            filter: isHovered ? "blur(4px)" : "blur(0px)" 
+                        }}
+                        transition={{ duration: 0.7 }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1E293B] via-transparent to-black/30" />
                     
-                    {/* Titles */}
-                    <div className="mb-3 mt-auto">
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">{career.title}</h3>
-                        <p className="text-sm text-slate-700 dark:text-white/70 mt-1 font-medium tracking-wide">{career.domain}</p>
+                    {/* Domain Tag */}
+                    <div className="absolute top-6 left-6 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black tracking-widest text-white uppercase">
+                        {career.domain}
                     </div>
 
-                    {/* Description */}
-                    <p className="text-sm text-slate-600 dark:text-white/80 line-clamp-3 leading-relaxed mb-4">
-                        {career.description}
-                    </p>
+                    {/* Bookmark */}
+                    <button
+                        onClick={handleBookmark}
+                        disabled={bookmarking}
+                        className="absolute top-6 right-6 z-20 p-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all shadow-xl"
+                    >
+                        {isSaved
+                            ? <BookmarkCheck className="h-4 w-4 text-blue-400" />
+                            : <Bookmark className="h-4 w-4 text-white" />
+                        }
+                    </button>
+                </div>
 
-                    {/* Glassmorphic Pills Container */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                        {/* Salary Pill */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
-                            <span className="text-slate-800 dark:text-white text-xs font-semibold">₹{(career.salaryRange.min / 100000).toFixed(1)}L - ${(career.salaryRange.max / 100000).toFixed(1)}L</span>
+                {/* Content */}
+                <div className="px-8 py-6 space-y-6">
+                    <div>
+                        <h3 className="text-3xl font-black text-white tracking-tighter leading-none mb-2">{career.title}</h3>
+                        <div className="flex items-center gap-4 text-slate-300 text-sm font-bold">
+                            <span className="flex items-center gap-1.5">
+                                <span className="text-blue-400">💰</span> ₹{(career.salaryRange.min / 100000).toFixed(0)}L - {(career.salaryRange.max / 100000).toFixed(0)}L
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                                <Star className="h-3.5 w-3.5 text-orange-400 fill-orange-400" /> {career.outlook} Field
+                            </span>
                         </div>
-                        
-                        {/* Growth Pill */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-sm">
-                            <Star className={`h-3 w-3 ${career.outlook === "Growing" ? "text-emerald-500 fill-emerald-500" : career.outlook === "Stable" ? "text-amber-500 fill-amber-500" : "text-blue-500 fill-blue-500"}`} />
-                            <span className="text-slate-800 dark:text-white text-xs font-semibold">{career.outlook}</span>
-                        </div>
+                    </div>
 
-                        {/* Match Score Pill */}
-                        {career.matchScore && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-500/20 backdrop-blur-md border border-blue-200 dark:border-blue-400/30 shadow-sm">
-                                <span className="text-blue-800 dark:text-blue-200 text-xs font-bold">{career.matchScore}% Match</span>
-                            </div>
+                    {/* Match Indicator */}
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-end">
+                            <span className="text-[10px] font-black uppercase text-blue-400 tracking-widest">AI Match Indicator</span>
+                            <span className="text-xl font-black text-white">{career.matchScore}%</span>
+                        </div>
+                        <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden p-[2px] border border-white/5">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${career.matchScore}%` }}
+                                transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                                className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Why this matches you */}
+                    <div className="space-y-3 bg-white/[0.03] rounded-2xl p-4 border border-white/5">
+                        <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Why This Fits You</div>
+                        <div className="space-y-2">
+                            {(career.matchReason || "✓ Matches your skills & interests").split('\n').map((reason, idx) => (
+                                <div key={idx} className="flex items-start gap-2 text-xs font-bold text-slate-300">
+                                    <span className="text-blue-500">✓</span>
+                                    <span>{reason.replace(/^✓\s*/, '')}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Hover Reveal Content */}
+                    <AnimatePresence>
+                        {isHovered && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 10 }}
+                                className="absolute bottom-6 inset-x-8 space-y-4 bg-[#1E293B] z-30 pt-4"
+                            >
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-black uppercase text-slate-300 tracking-widest">Key Skills</div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {career.requiredSkills.slice(0, 4).map((skill, i) => (
+                                            <span key={i} className="px-2 py-1 rounded-md bg-white/10 border border-white/20 text-[10px] font-black text-white">
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <Link href={`/roadmap/${career.id}`} className="block">
+                                    <Button className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black transition-all shadow-[0_15px_30px_-10px_rgba(37,99,235,0.4)] group">
+                                        View Career Roadmap
+                                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </Button>
+                                </Link>
+                            </motion.div>
                         )}
-                    </div>
-
-                    {/* Match Reason (Only if exists) */}
-                    {career.matchReason && (
-                        <p className="text-[12px] text-slate-600 dark:text-white/70 italic line-clamp-2 mb-4 px-1">
-                            {career.matchReason}
-                        </p>
-                    )}
-
-                    {/* Call to Action Button */}
-                    <Link href={`/roadmap/${career.id}`} className="w-full mt-auto">
-                        <Button
-                            className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 h-12 text-[15px] font-bold rounded-full transition-all duration-300 shadow-xl"
-                        >
-                            View Roadmap
-                        </Button>
-                    </Link>
+                    </AnimatePresence>
                 </div>
             </div>
-        </TiltCard>
+        </motion.div>
     );
 }
