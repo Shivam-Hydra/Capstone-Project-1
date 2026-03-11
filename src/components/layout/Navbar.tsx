@@ -8,12 +8,14 @@ import { Menu, Sparkles, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/lib/auth-context";
+import { LogoutConfirmModal } from "@/components/auth/LogoutConfirmModal";
 
 export function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const { user, loading, logout } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
     // Add shadow on scroll
@@ -27,6 +29,7 @@ export function Navbar() {
 
     const handleLogout = async () => {
         await logout();
+        setIsLogoutModalOpen(false);
         router.push("/");
     };
 
@@ -117,7 +120,7 @@ export function Navbar() {
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={handleLogout}
+                                        onClick={() => setIsLogoutModalOpen(true)}
                                         id="logout-btn"
                                         className="text-slate-500 hover:text-red-600 hover:bg-red-50 gap-2"
                                     >
@@ -181,7 +184,7 @@ export function Navbar() {
                                 <Button
                                     variant="ghost"
                                     className="w-full justify-start gap-2 text-red-600 hover:bg-red-50"
-                                    onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                                    onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
                                 >
                                     <LogOut className="h-4 w-4" /> Logout
                                 </Button>
@@ -199,6 +202,12 @@ export function Navbar() {
                     </div>
                 </div>
             )}
+
+            <LogoutConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogout}
+            />
         </nav>
     );
 }
