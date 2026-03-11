@@ -4,16 +4,18 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menu, Sparkles, LogOut, User } from "lucide-react";
+import { Menu, Sparkles, LogOut, User as UserIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/lib/auth-context";
 import { LogoutConfirmModal } from "@/components/auth/LogoutConfirmModal";
+import { useUserStore } from "@/lib/store";
 
 export function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const { user, loading, logout } = useAuth();
+    const { profile } = useUserStore();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -41,10 +43,13 @@ export function Navbar() {
         { name: "Pricing", href: "/pricing" },
     ];
 
-    // User initials avatar
+    // User initials avatar fallback
     const initials = user?.displayName
         ? user.displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
         : user?.email?.[0].toUpperCase() ?? "U";
+
+    // Effective Photo URL (Custom uploaded > Google Auth)
+    const photoURL = profile?.photoURL || user?.photoURL;
 
     return (
         <nav
@@ -109,11 +114,15 @@ export function Navbar() {
                                 <div className="flex items-center gap-3">
                                     <Link href="/profile">
                                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer group">
-                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                                                {initials}
+                                            <div className="h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold overflow-hidden">
+                                                {photoURL ? (
+                                                    <img src={photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    initials
+                                                )}
                                             </div>
                                             <span className="text-sm font-medium text-slate-700 group-hover:text-blue-700 max-w-[100px] truncate">
-                                                {user.displayName ?? user.email}
+                                                {profile?.name || user.displayName || user.email}
                                             </span>
                                         </div>
                                     </Link>
@@ -177,16 +186,26 @@ export function Navbar() {
                         {user ? (
                             <>
                                 <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button variant="ghost" className="w-full justify-start gap-2">
-                                        <User className="h-4 w-4" /> {user.displayName ?? user.email}
+                                    <Button variant="ghost" className="w-full justify-start gap-3 px-2 py-6">
+                                        <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
+                                            {photoURL ? (
+                                                <img src={photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                initials
+                                            )}
+                                        </div>
+                                        <span className="font-semibold truncate">
+                                            {profile?.name || user.displayName || user.email}
+                                        </span>
                                     </Button>
                                 </Link>
                                 <Button
                                     variant="ghost"
-                                    className="w-full justify-start gap-2 text-red-600 hover:bg-red-50"
+                                    className="w-full justify-start gap-3 text-red-600 hover:bg-red-50 px-2"
                                     onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
                                 >
-                                    <LogOut className="h-4 w-4" /> Logout
+                                    <LogOut className="h-4 w-4 shrink-0" />
+                                    <span className="font-medium">Logout</span>
                                 </Button>
                             </>
                         ) : (
