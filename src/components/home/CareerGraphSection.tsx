@@ -75,24 +75,30 @@ export function CareerGraphSection() {
         });
 
         // Aggressive forces for spread
-        fgRef.current.d3Force("charge").strength(-2000);
-        fgRef.current.d3Force("link").distance(300);
+        if (fgRef.current && typeof fgRef.current.d3Force === 'function') {
+            fgRef.current.d3Force("charge")?.strength(-2000);
+            fgRef.current.d3Force("link")?.distance(300);
+        }
 
         // Ensure simulation is high energy
-        fgRef.current.d3AlphaTarget(0.2).d3ReheatSimulation();
+        if (fgRef.current && typeof fgRef.current.d3AlphaTarget === 'function' && typeof fgRef.current.d3ReheatSimulation === 'function') {
+            fgRef.current.d3AlphaTarget(0.2).d3ReheatSimulation();
+        }
 
         // Staged camera snap with delay to allow layout to breathe
         const timer = setTimeout(() => {
             if (fgRef.current) {
-                if (fgRef.current.zoomToFit) {
+                if (typeof fgRef.current.zoomToFit === 'function') {
                     fgRef.current.zoomToFit(2000, 150);
-                } else {
+                } else if (typeof fgRef.current.cameraPosition === 'function') {
                     fgRef.current.cameraPosition({ x: 0, y: 0, z: 800 }, { x: 0, y: 0, z: 0 }, 2000);
                 }
 
                 // Gradually cool down
                 setTimeout(() => {
-                    if (fgRef.current) fgRef.current.d3AlphaTarget(0);
+                    if (fgRef.current && typeof fgRef.current.d3AlphaTarget === 'function') {
+                        fgRef.current.d3AlphaTarget(0);
+                    }
                 }, 2000);
             }
         }, 3000);

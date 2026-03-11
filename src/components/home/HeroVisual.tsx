@@ -67,19 +67,30 @@ export function HeroVisual({ isExternalHover = false }: { isExternalHover?: bool
             // cameraX positive = look right = graph moves left
             const cameraX = dimensions.width * 0.35;
 
-            const centerForce = fgRef.current.d3Force("center");
-            if (centerForce) {
-                centerForce.x(0).y(0);
-            }
+            // Aggressive forces for spread
+            if (fgRef.current && typeof fgRef.current.d3Force === 'function') {
+                const centerForce = fgRef.current.d3Force("center");
+                if (centerForce) {
+                    centerForce.x(0).y(0);
+                }
 
-            fgRef.current.d3Force("charge").strength(-400);
-            fgRef.current.d3Force("link").distance(80);
+                fgRef.current.d3Force("charge")?.strength(-400);
+                fgRef.current.d3Force("link")?.distance(80);
+            }
 
             // Use periodic centering to ensure it sticks
             const timer = setTimeout(() => {
-                fgRef.current.centerAt(cameraX, 0, 1000);
-                fgRef.current.zoomToFit(800, 200);
-                fgRef.current.d3AlphaTarget(0).d3ReheatSimulation();
+                if (fgRef.current) {
+                    if (typeof fgRef.current.centerAt === 'function') {
+                        fgRef.current.centerAt(cameraX, 0, 1000);
+                    }
+                    if (typeof fgRef.current.zoomToFit === 'function') {
+                        fgRef.current.zoomToFit(800, 200);
+                    }
+                    if (typeof fgRef.current.d3AlphaTarget === 'function' && typeof fgRef.current.d3ReheatSimulation === 'function') {
+                        fgRef.current.d3AlphaTarget(0).d3ReheatSimulation();
+                    }
+                }
             }, 500);
 
             return () => clearTimeout(timer);
