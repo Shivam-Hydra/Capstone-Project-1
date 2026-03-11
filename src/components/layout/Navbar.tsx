@@ -83,19 +83,19 @@ export function Navbar() {
                             key={link.href}
                             href={link.href}
                             className={cn(
-                                "text-xl font-medium transition-all duration-300 relative py-1 group flex flex-col items-center hover:scale-105 active:scale-95",
+                                "text-xl font-medium transition-all duration-500 relative py-1 group flex flex-col items-center hover:scale-110 active:scale-95",
                                 pathname === link.href
-                                    ? "text-blue-600 font-semibold drop-shadow-[0_0_8px_rgba(37,99,235,0.3)]"
-                                    : "text-slate-500 hover:text-blue-600 hover:drop-shadow-[0_0_8px_rgba(37,99,235,0.5)]"
+                                    ? "text-blue-600 font-bold drop-shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+                                    : "text-slate-500 hover:text-blue-500 hover:drop-shadow-[0_0_8px_rgba(37,99,235,0.3)]"
                             )}
                         >
-                            <span className="relative z-10 transition-transform duration-300">
+                            <span className="relative z-10 transition-transform duration-500 group-hover:-translate-y-0.5">
                                 {link.name}
                             </span>
 
                             {/* Centered Expanding Underline */}
                             <span className={cn(
-                                "absolute -bottom-1 h-0.5 bg-blue-600 rounded-full transition-all duration-300 origin-center",
+                                "absolute -bottom-1 h-0.5 bg-blue-500 rounded-full transition-all duration-500 origin-center",
                                 pathname === link.href
                                     ? "w-full scale-x-100 opacity-100"
                                     : "w-full scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"

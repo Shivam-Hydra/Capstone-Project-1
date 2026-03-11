@@ -44,52 +44,58 @@ export function LogoutConfirmModal({ isOpen, onClose, onConfirm }: LogoutConfirm
 
                     {/* Standard Premium Modal Card */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                        transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                        className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+                        animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+                        transition={{ type: "spring", damping: 25, stiffness: 400 }}
+                        className="relative w-full max-w-md bg-slate-900 rounded-[32px] shadow-[0_0_100px_rgba(0,0,0,0.8)] border border-white/10 overflow-hidden"
                     >
-                        <div className="p-6 sm:p-8">
+                        {/* Background Mesh for futuristic look */}
+                        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+                            <div className="absolute top-0 -left-20 w-80 h-80 bg-blue-600 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute bottom-0 -right-20 w-80 h-80 bg-indigo-600 rounded-full blur-[100px] animate-pulse delay-1000" />
+                        </div>
+
+                        <div className="relative z-10 p-10">
                             {/* Close Icon */}
                             <button
                                 onClick={onClose}
-                                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+                                className="absolute top-6 right-6 p-2 text-slate-500 hover:text-white transition-colors rounded-full hover:bg-white/5"
                             >
                                 <X className="h-5 w-5" />
                             </button>
 
-                            {/* Standard Header Icon */}
-                            <div className="mb-6 flex justify-center">
-                                <div className="h-14 w-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                    <LogOut className="h-7 w-7 text-red-600 dark:text-red-400" />
+                            {/* Futuristic Header Icon */}
+                            <div className="mb-8 flex justify-center">
+                                <div className="h-20 w-20 rounded-[24px] bg-red-500/10 flex items-center justify-center border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                                    <LogOut className="h-9 w-9 text-red-500" />
                                 </div>
                             </div>
 
-                            {/* Standard Typography */}
-                            <div className="text-center mb-8">
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                                    Sign Out
+                            {/* Premium Typography */}
+                            <div className="text-center mb-10">
+                                <h3 className="text-3xl font-black text-white mb-3 tracking-tighter">
+                                    Sign <span className="text-red-500 italic">Out.</span>
                                 </h3>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
-                                    Are you sure you want to sign out? You'll need to login again to access your career roadmaps and chat history.
+                                <p className="text-slate-400 text-base font-medium leading-relaxed">
+                                    Your secure session will be closed. Are you sure you want to exit the intelligence engine?
                                 </p>
                             </div>
 
-                            {/* Standard Action Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-3">
+                            {/* Futuristic Action Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4">
                                 <Button
                                     variant="outline"
                                     onClick={onClose}
-                                    className="flex-1 rounded-xl h-11 border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors order-2 sm:order-1"
+                                    className="flex-1 rounded-2xl h-14 border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all order-2 sm:order-1"
                                 >
-                                    Cancel
+                                    STAY LOGGED IN
                                 </Button>
                                 <Button
                                     onClick={onConfirm}
-                                    className="flex-1 rounded-xl h-11 bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors order-1 sm:order-2"
+                                    className="flex-1 rounded-2xl h-14 bg-red-600 hover:bg-red-700 text-white font-black transition-all shadow-lg shadow-red-900/40 active:scale-95 order-1 sm:order-2"
                                 >
-                                    Log Out
+                                    CONFIRM EXIT
                                 </Button>
                             </div>
                         </div>

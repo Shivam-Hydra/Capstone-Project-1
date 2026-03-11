@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Outfit, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
@@ -9,6 +9,7 @@ import { AuthProvider } from "@/lib/auth-context";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 
 export const metadata: Metadata = {
   title: "Career Guidance AI",
@@ -22,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.variable, outfit.variable, "antialiased bg-background text-foreground min-h-screen flex flex-col")}>
+      <body className={cn(inter.variable, outfit.variable, spaceGrotesk.variable, "antialiased bg-background text-foreground min-h-screen flex flex-col")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

@@ -1,55 +1,37 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Features } from "@/components/features/Features";
-import Link from "next/link";
-import { useUserStore } from "@/lib/store";
-import { useEffect, useState } from "react";
+import { HeroSection } from "@/components/home/HeroSection";
+import { TrustSection } from "@/components/home/TrustSection";
+import { InteractiveFeatures } from "@/components/home/InteractiveFeatures";
+import { ProductDemo } from "@/components/home/ProductDemo";
+import { CareerGraphSection } from "@/components/home/CareerGraphSection";
+import { PersonalizationSection } from "@/components/home/PersonalizationSection";
+import { PricingSection } from "@/components/home/PricingSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { CTASection } from "@/components/home/CTASection";
+import { MainFooter } from "@/components/home/MainFooter";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  const { chatMessages } = useUserStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const hasHistory = chatMessages && chatMessages.length > 0;
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 md:p-24 relative overflow-hidden bg-background">
-      {/* Clean Background - Plain Solid Color */}
+    <main className="dark min-h-screen bg-[#0F172A] selection:bg-blue-500/30 font-space-grotesk">
+      <HeroSection />
 
-      <div className="z-10 flex flex-col items-center text-center max-w-3xl space-y-8 animate-fade-in py-20">
-        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-secondary border border-border transition-colors hover:bg-secondary/80">
-          <span className="text-primary text-xs font-semibold tracking-wide uppercase">AI-Powered Career Intelligence</span>
-        </div>
-
-        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
-          Your Career, <br />
-          <span className="text-primary">Clearly Mapped.</span>
-        </h1>
-
-        <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          Navigate your future with precision. Our AI analyzes your profile, identifies skill gaps,
-          and builds a personalized roadmap to your dream career.
-        </p>
-
-        <div className="mt-8 flex items-center justify-center gap-x-4">
-          <Link href="/chat">
-            <Button className="h-12 px-8 text-base bg-primary text-white hover:bg-primary/90 border-0 rounded-lg font-medium shadow-md transition-all active:scale-95">
-              {mounted && hasHistory ? "Continue Career Chat" : "Start Career Chat"}
-            </Button>
-          </Link>
-          <Link href="/profile/create">
-            <Button variant="outline" className="h-12 px-8 text-base bg-background border-border text-foreground hover:bg-secondary rounded-lg transition-colors">
-              Build Profile
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      <Features />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <TrustSection />
+        <ProductDemo />
+        <InteractiveFeatures />
+        <CareerGraphSection />
+        <PersonalizationSection />
+        <PricingSection />
+        <TestimonialsSection />
+        <CTASection />
+        <MainFooter />
+      </motion.div>
     </main>
   );
 }
