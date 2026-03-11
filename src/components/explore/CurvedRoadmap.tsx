@@ -2,7 +2,7 @@
 
 import { Career, Course } from "@/types";
 import { motion } from "framer-motion";
-import { Briefcase, BookOpen, Star, Clock, Trophy, Target } from "lucide-react";
+import { Briefcase, BookOpen, Star, Clock, Trophy, Target, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -131,6 +131,7 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                     const isLeft = i % 2 === 0;
                     const isCourse = node.type === "course";
                     const data = node.data as any;
+                    const stepNumber = (i + 1).toString().padStart(2, '0');
 
                     return (
                         <motion.div
@@ -147,102 +148,156 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                             onMouseEnter={() => setHoveredIndex(i)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
+                            {/* 6. STEP LABELS */}
+                            <div className={cn(
+                                "absolute -top-8 left-20 md:left-auto md:right-auto font-black italic tracking-[0.3em] text-[10px] opacity-40 uppercase",
+                                isLeft ? "md:left-8" : "md:right-8"
+                            )}>
+                                STEP {stepNumber} <span className="text-white/30 truncate ml-2">/ {isCourse ? "Course" : "Career"}</span>
+                            </div>
+
                             {/* Node Bubble on the path */}
                             <div className={cn(
                                 "roadmap-icon absolute md:left-1/2 md:-translate-x-1/2 left-8 -translate-x-1/2",
                                 "w-4 h-4 rounded-full border-[3px] bg-background shadow-lg z-20 transition-transform duration-300",
-                                isCourse ? "border-purple-500" : "border-blue-500",
+                                isCourse ? "border-purple-500 shadow-purple-500/20" : "border-blue-500 shadow-blue-500/20",
                                 hoveredIndex === i && "scale-150"
                             )} />
 
-                            {/* Card Content - Redesigned */}
+                            {/* 7. ROADMAP CARD DEPTH & 4/5. REDESIGNED CARDS */}
                             <div className={cn(
-                                "relative w-full md:w-[45%] bg-slate-900 border-slate-800 shadow-2xl rounded-[32px] pt-14 pb-8 px-8 border transition-all duration-300 text-white flex flex-col items-center text-center dark:bg-white dark:border-slate-200 dark:shadow-md dark:text-slate-900",
-                                hoveredIndex === i ? (isCourse ? "scale-[1.02] shadow-purple-500/30 dark:shadow-purple-500/20" : "scale-[1.02] shadow-blue-500/30 dark:shadow-blue-500/20") : ""
+                                "relative w-full md:w-[48%] border-white/5 backdrop-blur-xl rounded-[48px] pt-16 pb-10 px-10 border transition-all duration-500 text-white flex flex-col group",
+                                isCourse 
+                                    ? "bg-gradient-to-b from-[#0b1220] to-[#0a0f1c] shadow-[0_25px_60px_rgba(0,0,0,0.35)] active:shadow-purple-500/10" 
+                                    : "bg-gradient-to-b from-[#0b1220] to-[#0a0f1c] shadow-[0_25px_60px_rgba(0,0,0,0.35)] active:shadow-blue-500/10",
+                                hoveredIndex === i ? (isCourse ? "scale-[1.03] shadow-purple-500/25 border-purple-500/20" : "scale-[1.03] shadow-blue-500/30 border-blue-500/20") : ""
                             )}>
-                                {/* Overflowing Top Anchor Icon */}
+                                {/* Overflowing Top Anchor Icon with Learning/Career Theme */}
                                 <div className={cn(
-                                    "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 flex items-center justify-center shadow-2xl shadow-black/50 border-background backdrop-blur-xl",
-                                    isCourse ? "bg-purple-600/90 text-white" : "bg-blue-600/90 text-white"
+                                    "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-[32px] border-4 flex items-center justify-center shadow-2xl transition-transform duration-500 group-hover:rotate-6",
+                                    isCourse 
+                                        ? "bg-purple-600/90 border-[#1a1c2e] text-white shadow-purple-900/40" 
+                                        : "bg-blue-600/90 border-[#1a1c2e] text-white shadow-blue-900/40"
                                 )}>
-                                    {isCourse ? <BookOpen className="w-7 h-7" /> : <Briefcase className="w-7 h-7" />}
+                                    {isCourse ? <BookOpen className="w-9 h-9" /> : <Briefcase className="w-9 h-9" />}
                                 </div>
 
-                                <div className="flex flex-wrap justify-center items-center gap-2 mb-4">
-                                    <span className={cn(
-                                        "text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest",
-                                        isCourse ? "bg-purple-900/80 text-purple-200 dark:bg-purple-100 dark:text-purple-700" : "bg-blue-900/80 text-blue-200 dark:bg-blue-100 dark:text-blue-700"
-                                    )}>
-                                        {isCourse ? "Course Recommendation" : "Career Path"}
-                                    </span>
-                                    {isCourse && data.level && (
-                                        <span className="text-[10px] bg-slate-700/80 text-slate-200 dark:bg-slate-100 dark:text-slate-600 px-3 py-1.5 rounded-full font-bold uppercase tracking-widest">
-                                            {data.level}
+                                <div className="text-center space-y-4">
+                                    <div className="flex flex-wrap justify-center items-center gap-2 mb-2">
+                                        <span className={cn(
+                                            "text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border",
+                                            isCourse 
+                                                ? "bg-purple-500/10 text-purple-400 border-purple-400/20" 
+                                                : "bg-blue-500/10 text-blue-400 border-blue-400/20"
+                                        )}>
+                                            {isCourse ? "AI Course Recommendation" : "CAREER PATH"}
                                         </span>
-                                    )}
-                                    {!isCourse && data.matchScore && (
-                                        <span className="text-[10px] bg-emerald-900/80 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700 px-3 py-1.5 rounded-full font-bold uppercase tracking-widest flex items-center gap-1">
-                                            <Target className="w-3 h-3" /> {data.matchScore}% Match
-                                        </span>
+                                        {isCourse && data.level && (
+                                            <span className="text-[10px] bg-white/5 text-slate-400 px-3 py-1.5 rounded-full font-black uppercase tracking-widest border border-white/5">
+                                                {data.level}
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    <h3 className="text-3xl font-black text-white leading-none tracking-tighter uppercase italic">{data.title}</h3>
+                                    
+                                    {isCourse ? (
+                                        <>
+                                            <div className="flex flex-wrap justify-center items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">
+                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                                    <Trophy className="w-3.5 h-3.5 text-amber-500" /> {data.provider}
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" /> {data.rating || "4.9"} rating
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                                    <Clock className="w-3.5 h-3.5 text-blue-400" /> {data.duration}
+                                                </div>
+                                            </div>
+
+                                            {/* Skill Gain Section */}
+                                            <div className="space-y-4 pt-6 border-t border-white/5">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400">Skills you&apos;ll gain</p>
+                                                <div className="flex flex-wrap justify-center gap-2">
+                                                    {(data.skillsCovered || data.tags || ["Python", "Neural Networks", "TensorFlow"]).slice(0, 3).map((skill: string, idx: number) => (
+                                                        <span key={idx} className="text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20 px-3 py-1.5 rounded-xl uppercase tracking-tight">
+                                                            {skill}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-10">
+                                                <a 
+                                                    href={data.url} 
+                                                    target="_blank" 
+                                                    rel="noreferrer"
+                                                    className={cn(
+                                                        "group h-14 rounded-2xl flex items-center justify-center font-black text-xs uppercase tracking-widest transition-all duration-300 active:scale-95 px-8",
+                                                        "bg-purple-600 text-white hover:bg-purple-500 shadow-xl shadow-purple-900/20"
+                                                    )}
+                                                >
+                                                    Explore Course
+                                                    <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                                                </a>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-sm mx-auto mb-8 line-clamp-2">
+                                                {data.description}
+                                            </p>
+
+                                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                                <div className="p-4 rounded-3xl bg-white/5 border border-white/5 space-y-1">
+                                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Salary Range</p>
+                                                    <p className="font-bold text-white text-base">
+                                                        {data.salaryRange ? `₹${data.salaryRange.min/100000}L – ₹${data.salaryRange.max/100000}L` : data.salary || "₹18L – ₹32L"}
+                                                    </p>
+                                                </div>
+                                                <div className="p-4 rounded-3xl bg-white/5 border border-white/5 space-y-1">
+                                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Market Demand</p>
+                                                    <p className="font-bold text-emerald-400 text-base flex items-center justify-center gap-1">
+                                                        🔥 {data.growth || "High"}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Why this fits section */}
+                                            <div className="space-y-4 pt-6 border-t border-white/5 text-left">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 text-center">Why this fits you</p>
+                                                <ul className="space-y-3">
+                                                    {[
+                                                        "Programming interest",
+                                                        "AI domain preference",
+                                                        "Strong logical reasoning"
+                                                    ].map((point, idx) => (
+                                                        <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-slate-300 uppercase tracking-tight">
+                                                            <div className="h-4 w-4 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                                                <Star className="h-2.5 w-2.5 text-blue-400 fill-blue-400" />
+                                                            </div>
+                                                            {point}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="pt-10">
+                                                <Link href={`/roadmap/${data.id}`} className="w-full">
+                                                    <button 
+                                                        className={cn(
+                                                            "group w-full h-14 rounded-2xl flex items-center justify-center font-black text-xs uppercase tracking-widest transition-all duration-500 active:scale-95 px-8",
+                                                            "bg-gradient-to-r from-[#2563EB] to-[#06B6D4] text-white shadow-xl shadow-blue-900/30 hover:shadow-blue-500/40"
+                                                        )}
+                                                    >
+                                                        View Career Roadmap
+                                                        <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                                                    </button>
+                                                </Link>
+                                            </div>
+                                        </>
                                     )}
                                 </div>
-                                
-                                <h3 className="text-2xl font-bold text-white dark:text-slate-900 mb-4 leading-tight tracking-tight">{data.title}</h3>
-                                
-                                {isCourse ? (
-                                    <>
-                                        {data.description && <p className="text-sm text-slate-300 dark:text-slate-600 mb-6 leading-relaxed px-2">{data.description}</p>}
-                                        <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-slate-400 dark:text-slate-500 mb-8 border-t border-slate-700/50 dark:border-slate-200 w-full pt-4">
-                                            <div className="flex items-center gap-1.5 font-medium text-slate-200 dark:text-slate-800">
-                                                <Trophy className="w-4 h-4 text-amber-500" /> {data.provider}
-                                            </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> {data.rating || "4.5"}
-                                            </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" /> {data.duration}
-                                            </div>
-                                        </div>
-                                        <a 
-                                            href={(data as Course).url} 
-                                            target="_blank" 
-                                            rel="noreferrer"
-                                            className={cn(
-                                                "w-full max-w-[200px] h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 active:scale-95 shadow-lg",
-                                                "bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:shadow-purple-500/25"
-                                            )}
-                                        >
-                                            View Course
-                                        </a>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p className="text-sm text-slate-300 dark:text-slate-600 mb-6 px-2">{data.description}</p>
-                                        <div className="flex justify-center items-center gap-8 text-sm mb-8 bg-slate-800/50 dark:bg-slate-100/50 w-full py-4 rounded-2xl">
-                                            <div className="flex flex-col items-center">
-                                                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-1">Salary Range</p>
-                                                <p className="font-bold text-slate-200 dark:text-slate-800">{data.salary}</p>
-                                            </div>
-                                            <div className="h-10 w-px bg-slate-700 dark:bg-slate-300"></div>
-                                            <div className="flex flex-col items-center">
-                                                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-1">Demand</p>
-                                                <p className="font-bold text-emerald-400 dark:text-emerald-600 flex items-center gap-1">
-                                                    {data.growth} <span className="text-[10px]">🔥</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <Link href={`/roadmap/${data.id}`} className="w-full flex justify-center">
-                                            <button 
-                                                className={cn(
-                                                    "w-full max-w-[200px] h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 active:scale-95 shadow-lg mt-auto",
-                                                    "bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:shadow-blue-500/25"
-                                                )}
-                                            >
-                                                View Roadmap
-                                            </button>
-                                        </Link>
-                                    </>
-                                )}
                             </div>
                         </motion.div>
                     );

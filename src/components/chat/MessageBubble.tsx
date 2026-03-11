@@ -1,6 +1,6 @@
 import { ChatMessage, Career, Course, Roadmap } from "@/types";
 import { cn } from "@/lib/utils";
-import { CareerCard } from "@/components/cards/CareerCard";
+import { ChatCareerCard } from "./ChatCareerCard";
 import { CourseCard } from "@/components/cards/CourseCard";
 import { RoadmapView } from "@/components/cards/RoadmapView";
 import { FileText, Loader2, RefreshCw } from "lucide-react";
@@ -46,10 +46,10 @@ export function MessageBubble({ message, onAction }: MessageBubbleProps) {
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                                 {careers.map((career) => (
-                                    <CareerCard
+                                    <ChatCareerCard
                                         key={career.id}
                                         career={career}
-                                        onViewRoadmap={(id) => onAction?.("view_roadmap", id)}
+                                        onViewRoadmap={(id: string) => onAction?.("view_roadmap", id)}
                                     />
                                 ))}
                             </div>

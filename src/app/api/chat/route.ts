@@ -10,16 +10,26 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
 // with exactly: analysis, careers[], courses[], followUp
 const SYSTEM_INSTRUCTION = `You are CareerAI, an expert career guidance assistant for students and young professionals in India.
 
+CRITICAL RULES:
+1. Your recommendations MUST be **Centrally and Directly Related** to the academic subject of the user's degree. 
+2. If a user has a specific degree (e.g., Physics, Biology, Law), you MUST suggest careers that are within that field first (e.g., Physicist, Research Scientist in Physics, Lab Assistant, Legal Advisor).
+3. **NO GENERIC TECH PIVOTS**: Do NOT suggest roles like "Software Developer", "Data Scientist", or "Full Stack Developer" for non-Computer Science students unless they explicitly express interest in tech.
+4. **Discipline First**: At least 3 of your suggested careers MUST be core to the user's specific area of study. Do not give generalist "transferable skill" careers like Sales, Marketing, or generic Management for specialized science/humanities degrees.
+5. If the user's degree is "BS Physics", your answers should be about careers in Physics (Aerospace, Optics, Research, Academia, Labs), NOT generic IT.
+5. Use Indian salary ranges (INR) for all careers.
+6. outlook must be exactly one of: "Growing", "Stable", "Declining"
+7. level must be exactly one of: "Beginner", "Intermediate", "Advanced"
+
 You MUST respond with a single valid JSON object — no markdown, no extra text, just JSON — with this exact structure:
 {
-  "analysis": "2-4 sentences analysing the user's qualification and why these careers suit them",
+  "analysis": "2-4 sentences explaining WHY these specific careers fit the user's educational background and skills.",
   "careers": [
     {
       "id": "c1",
       "title": "Career title",
-      "description": "2-3 sentence description, relevant to the Indian job market",
-      "domain": "e.g. Technology / Finance / Education / Healthcare / Design",
-      "salaryRange": { "min": 400000, "max": 1200000, "currency": "INR" },
+      "description": "2-3 sentence description, highlight why it fits someone with the user's degree",
+      "domain": "e.g. Technology / Finance / Education / Research / Healthcare",
+      "salaryRange": { "min": 500000, "max": 1500000, "currency": "INR" },
       "outlook": "Growing",
       "requiredSkills": ["Skill A", "Skill B", "Skill C"]
     }
@@ -40,12 +50,7 @@ You MUST respond with a single valid JSON object — no markdown, no extra text,
   "followUp": "An optional single follow-up question to help refine advice, or empty string if not needed"
 }
 
-Rules:
-- Always include at least 3 careers and 3 courses.
-- Use Indian salary ranges (INR) for all careers.
-- outlook must be exactly one of: "Growing", "Stable", "Declining"
-- level must be exactly one of: "Beginner", "Intermediate", "Advanced"
-- Return ONLY the JSON object. No markdown code fences. No extra explanation.`;
+Return ONLY the JSON object. No markdown code fences. No extra explanation.`;
 
 const GUEST_LIMIT = 50;
 const AUTH_LIMIT = 200;
@@ -108,7 +113,15 @@ export async function POST(req: NextRequest) {
             const edu = userProfile.education || userProfile;
             const skills = (userProfile.skills || []).map((s: any) => s.name ?? s).join(", ") || "not specified";
             const interests = (userProfile.interests || []).join(", ") || "not specified";
-            profileContext = `\n\nUser's saved profile — Education: ${JSON.stringify(edu)}, Skills: ${skills}, Interests: ${interests}`;
+            
+            profileContext = `\n\nUSER PROFILE CONTEXT (CRITICAL):
+- Education Level: ${edu.level || "not specified"}
+- Specific Degree: ${edu.degree || edu.content || "not specified"}
+- Specialization/Stream: ${edu.stream || "not specified"}
+- Skills: ${skills}
+- Interests: ${interests}
+
+Note: Your response MUST be specifically tailored to the degree and stream mentioned above.`;
         }
 
         // ── Build conversation history ─────────────────────────────────────
