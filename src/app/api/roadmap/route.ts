@@ -1,11 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
+import { runWithGemini } from "@/lib/gemini";
 import { rateLimit, getRequestIdentifier } from "@/lib/rate-limit";
 import { getAuth } from "firebase-admin/auth";
 import { initAdminApp } from "@/lib/firebase-admin";
 import { Roadmap } from "@/types";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
 
 const SYSTEM_INSTRUCTION = `You are CareerAI, an expert career guidance assistant for the Indian market.
 Generate a detailed, highly practical, and actionable step-by-step roadmap for a specific career.
@@ -74,20 +73,22 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "careerId and careerTitle are required." }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            systemInstruction: SYSTEM_INSTRUCTION,
-            generationConfig: {
-                responseMimeType: "application/json",
-                maxOutputTokens: 8192,
-                temperature: 0.6,
-            },
-        });
+        // ── Call Gemini with JSON response mode ───────────────────────────
+        const rawText = await runWithGemini(async (genAI) => {
+            const model = genAI.getGenerativeModel({
+                model: "gemini-2.5-flash",
+                systemInstruction: SYSTEM_INSTRUCTION,
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    maxOutputTokens: 8192,
+                    temperature: 0.6,
+                },
+            });
 
-        const prompt = `Generate a detailed roadmap for the career: "${careerTitle}". \nContext: ${careerDescription || "No specific context provided."}`;
-        
-        const result = await model.generateContent(prompt);
-        const rawText = result.response.text();
+            const prompt = `Generate a detailed roadmap for the career: "${careerTitle}". \nContext: ${careerDescription || "No specific context provided."}`;
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        });
 
         let parsed: Partial<Roadmap>;
         try {

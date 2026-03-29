@@ -1,10 +1,9 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
+import { runWithGemini } from "@/lib/gemini";
 import { rateLimit, getRequestIdentifier } from "@/lib/rate-limit";
 import { getAuth } from "firebase-admin/auth";
 import { initAdminApp } from "@/lib/firebase-admin";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
 
 const MAX_REQUESTS_PER_MINUTE = 5;
 
@@ -47,11 +46,6 @@ export async function POST(req: NextRequest) {
         const focus = careerTitle ? `for someone pursuing a career in "${careerTitle}"` : "based on their profile";
 
         // ── 4. Gemini request ─────────────────────────────────────────────
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            generationConfig: { maxOutputTokens: 1024 },
-        });
-
         const prompt = `You are a course recommendation expert for Indian students.
 
 Student profile: ${profileSummary}
@@ -75,8 +69,14 @@ Return a JSON array of exactly 8 course recommendations. Each must have:
 Prioritize free resources (NPTEL, YouTube, Coursera audit). Use real, well-known courses that exist.
 Return only the raw JSON array, no markdown.`;
 
-        const result = await model.generateContent(prompt);
-        const text = result.response.text().trim();
+        const text = await runWithGemini(async (genAI) => {
+            const model = genAI.getGenerativeModel({
+                model: "gemini-2.5-flash",
+                generationConfig: { maxOutputTokens: 1024 },
+            });
+            const result = await model.generateContent(prompt);
+            return result.response.text().trim();
+        });
         const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
         const courses = JSON.parse(cleaned);
 

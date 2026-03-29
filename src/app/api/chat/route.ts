@@ -1,10 +1,9 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
+import { runWithGemini } from "@/lib/gemini";
 import { rateLimit, getRequestIdentifier } from "@/lib/rate-limit";
 import { getAuth } from "firebase-admin/auth";
 import { initAdminApp } from "@/lib/firebase-admin";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!.trim());
 
 // System instruction tells Gemini to ALWAYS return valid JSON
 // with exactly: analysis, careers[], courses[], followUp
@@ -149,19 +148,21 @@ Note: Your response MUST be specifically tailored to the degree and stream menti
         }));
 
         // ── Call Gemini with JSON response mode ───────────────────────────
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            systemInstruction: SYSTEM_INSTRUCTION + profileContext,
-            generationConfig: {
-                responseMimeType: "application/json",
-                maxOutputTokens: 8192,
-                temperature: 0.7,
-            },
-        });
+        const rawText = await runWithGemini(async (genAI) => {
+            const model = genAI.getGenerativeModel({
+                model: "gemini-2.5-flash",
+                systemInstruction: SYSTEM_INSTRUCTION + profileContext,
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    maxOutputTokens: 8192,
+                    temperature: 0.7,
+                },
+            });
 
-        const chat = model.startChat({ history: geminiHistory });
-        const result = await chat.sendMessage(lastMsg.content);
-        const rawText = result.response.text();
+            const chat = model.startChat({ history: geminiHistory });
+            const result = await chat.sendMessage(lastMsg.content);
+            return result.response.text();
+        });
 
         // ── Parse the JSON response ───────────────────────────────────────
         let parsed: any;
