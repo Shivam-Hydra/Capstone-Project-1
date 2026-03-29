@@ -150,10 +150,10 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                         >
                             {/* 6. STEP LABELS */}
                             <div className={cn(
-                                "absolute -top-8 left-20 md:left-auto md:right-auto font-black italic tracking-[0.3em] text-[10px] opacity-40 uppercase",
+                                "absolute -top-8 left-20 md:left-auto md:right-auto font-black italic tracking-[0.3em] text-[10px] opacity-60 uppercase !text-white",
                                 isLeft ? "md:left-8" : "md:right-8"
                             )}>
-                                STEP {stepNumber} <span className="text-white/30 truncate ml-2">/ {isCourse ? "Course" : "Career"}</span>
+                                STEP {stepNumber} <span className="text-white/50 truncate ml-2">/ {isCourse ? "Course" : "Career"}</span>
                             </div>
 
                             {/* Node Bubble on the path */}
@@ -199,18 +199,18 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                                         )}
                                     </div>
                                     
-                                    <h3 className="text-3xl font-black text-white leading-none tracking-tighter uppercase italic">{data.title}</h3>
+                                    <h3 className="text-3xl font-black !text-white leading-none tracking-tighter uppercase italic force-text-contrast">{data.title}</h3>
                                     
                                     {isCourse ? (
                                         <>
-                                            <div className="flex flex-wrap justify-center items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">
-                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                            <div className="flex flex-wrap justify-center items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">
+                                                <div className="flex items-center gap-1.5 text-slate-200">
                                                     <Trophy className="w-3.5 h-3.5 text-amber-500" /> {data.provider}
                                                 </div>
-                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                                <div className="flex items-center gap-1.5 text-slate-200">
                                                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" /> {data.rating || "4.9"} rating
                                                 </div>
-                                                <div className="flex items-center gap-1.5 text-slate-300">
+                                                <div className="flex items-center gap-1.5 text-slate-200">
                                                     <Clock className="w-3.5 h-3.5 text-blue-400" /> {data.duration}
                                                 </div>
                                             </div>
@@ -244,19 +244,19 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                                         </>
                                     ) : (
                                         <>
-                                            <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-sm mx-auto mb-8 line-clamp-2">
+                                            <p className="text-sm text-slate-300 font-medium leading-relaxed max-w-sm mx-auto mb-8 line-clamp-2">
                                                 {data.description}
                                             </p>
 
                                             <div className="grid grid-cols-2 gap-4 mb-8">
                                                 <div className="p-4 rounded-3xl bg-white/5 border border-white/5 space-y-1">
-                                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Salary Range</p>
-                                                    <p className="font-bold text-white text-base">
+                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Salary Range</p>
+                                                    <p className="font-bold !text-white text-base">
                                                         {data.salaryRange ? `₹${data.salaryRange.min/100000}L – ₹${data.salaryRange.max/100000}L` : data.salary || "₹18L – ₹32L"}
                                                     </p>
                                                 </div>
                                                 <div className="p-4 rounded-3xl bg-white/5 border border-white/5 space-y-1">
-                                                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Market Demand</p>
+                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Market Demand</p>
                                                     <p className="font-bold text-emerald-400 text-base flex items-center justify-center gap-1">
                                                         🔥 {data.growth || "High"}
                                                     </p>
@@ -272,7 +272,7 @@ export function CurvedRoadmap({ careers, courses }: CurvedRoadmapProps) {
                                                         "AI domain preference",
                                                         "Strong logical reasoning"
                                                     ].map((point, idx) => (
-                                                        <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-slate-300 uppercase tracking-tight">
+                                                        <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-slate-200 uppercase tracking-tight">
                                                             <div className="h-4 w-4 rounded-full bg-blue-500/20 flex items-center justify-center">
                                                                 <Star className="h-2.5 w-2.5 text-blue-400 fill-blue-400" />
                                                             </div>

@@ -68,6 +68,39 @@ export const CAREERS: Career[] = [
         requiredSkills: ["Control Systems", "Embedded C", "C++", "CAD"],
         matchScore: 78,
         matchReason: "✓ Physics background\n✓ Hardware interest\n✓ Complex mapping"
+    },
+    {
+        id: "c7",
+        title: "Research Scientist (Physics)",
+        description: "Conduct fundamental research in physical phenomena.",
+        domain: "Science",
+        salaryRange: { min: 900000, max: 2400000, currency: "INR" },
+        outlook: "Stable",
+        requiredSkills: ["Quantum Mechanics", "Data Analysis", "LaTeX", "Problem Solving"],
+        matchScore: 98,
+        matchReason: "✓ Core field match\n✓ Academic excellence\n✓ Research mindset"
+    },
+    {
+        id: "c8",
+        title: "Computational Physicist",
+        description: "Solve complex physical problems using large-scale computations.",
+        domain: "Science/Tech",
+        salaryRange: { min: 1000000, max: 2600000, currency: "INR" },
+        outlook: "Growing",
+        requiredSkills: ["Python", "Numerical Methods", "C++", "Simulation"],
+        matchScore: 94,
+        matchReason: "✓ Physics & Programming\n✓ Numerical expertise\n✓ Computational focus"
+    },
+    {
+        id: "c9",
+        title: "Medical Physicist",
+        description: "Apply physics principles to healthcare and medical imaging.",
+        domain: "Healthcare",
+        salaryRange: { min: 900000, max: 2200000, currency: "INR" },
+        outlook: "Growing",
+        requiredSkills: ["Radiation Physics", "Imaging Tech", "Anatomy Basics", "Safety Protocols"],
+        matchScore: 85,
+        matchReason: "✓ Practical application\n✓ Niche specialization\n✓ Science-driven impact"
     }
 ];
 

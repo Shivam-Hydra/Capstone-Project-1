@@ -70,7 +70,24 @@ export default function CareersPage() {
     }, [chatCareers, profile]);
 
     const recommendedCareers = careers.slice(0, 3);
-    const otherCareers = careers.slice(3);
+    const recommendedIds = new Set(recommendedCareers.map(c => c.id));
+    
+    // Ensure "More Career Fields" is populated even if AI recommendations are few
+    const initialOther = careers.slice(3);
+    const initialOtherIds = new Set(initialOther.map(c => c.id));
+    
+    const exploratoryCareers = [...initialOther];
+    if (exploratoryCareers.length < 6) {
+        const fallbacks = CAREERS.filter(c => !recommendedIds.has(c.id) && !initialOtherIds.has(c.id));
+        exploratoryCareers.push(...fallbacks.slice(0, 6 - exploratoryCareers.length));
+    }
+
+    console.log("Careers Data Debug:", { 
+        total: careers.length, 
+        recommended: recommendedCareers.length, 
+        initialOther: initialOther.length, 
+        exploratory: exploratoryCareers.length 
+    });
 
     return (
         <ProtectedRoute>
@@ -89,7 +106,7 @@ export default function CareersPage() {
                                 <BrainCircuit className="h-3.5 w-3.5" />
                                 AI Recommended For You
                             </motion.div>
-                            <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white">
+                            <h1 className="text-5xl md:text-6xl font-black tracking-tighter !text-white drop-shadow-sm">
                                 Careers That Match <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-400">Your Skills</span>
                             </h1>
                             <p className="text-slate-300 font-bold max-w-2xl mx-auto">
@@ -139,17 +156,27 @@ export default function CareersPage() {
 
                 {/* 3. EXPLORE MORE CAREERS */}
                 <section className="py-24 container mx-auto px-6">
-                    <div className="flex items-center justify-between mb-12">
-                        <div className="space-y-1">
+                    <div className="flex flex-col mb-12">
+                        <div className="space-y-4">
                             <div className="text-blue-400 text-xs font-black uppercase tracking-widest flex items-center gap-2">
                                 <Compass className="h-3 w-3" /> Explore Paths
                             </div>
-                            <h2 className="text-4xl font-black tracking-tighter">More Career Fields</h2>
+                            <h2 className="text-4xl md:text-5xl font-black tracking-tighter !text-white">More Career Fields</h2>
+                            <p className="text-slate-400 font-bold max-w-3xl">
+                                {profile ? (
+                                    <>
+                                        Expanding horizons for {(!profile.education?.degree || profile.education.degree === "Other") ? "your profile" : `a ${profile.education.degree} in ${profile.education.stream || "your field"}`}. 
+                                        We&apos;ve curated these additional paths that align with your interest in {profile.interests?.[0] || "cutting-edge technology"}.
+                                    </>
+                                ) : (
+                                    "Discover additional trajectories that leverage your unique skill set and problem-solving abilities."
+                                )}
+                            </p>
                         </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {otherCareers.map((career) => (
+                        {exploratoryCareers.map((career) => (
                             <CareerCard 
                                 key={career.id} 
                                 career={career} 

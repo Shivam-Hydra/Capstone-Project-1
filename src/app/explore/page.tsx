@@ -83,7 +83,7 @@ export default function ExplorePage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-slate-950 text-white selection:bg-blue-500/30">
+            <div className="dark min-h-screen bg-slate-950 text-white selection:bg-blue-500/30">
                 {/* 1. HERO SECTION */}
                 <section className="relative pt-32 pb-20 px-4 overflow-hidden">
                     <FloatingAINodes />
@@ -102,10 +102,10 @@ export default function ExplorePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-5xl md:text-7xl font-black tracking-tighter leading-tight"
+                            className="text-5xl md:text-7xl font-black tracking-tighter leading-tight !text-white force-text-contrast"
                         >
                             Your Personalized <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 drop-shadow-sm">
                                 Career Journey
                             </span>
                         </motion.h1>
@@ -114,7 +114,7 @@ export default function ExplorePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-lg text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed"
+                            className="text-lg text-slate-300 font-medium max-w-2xl mx-auto leading-relaxed"
                         >
                             Based on your chat, CareerAI has generated a step-by-step path connecting courses and career milestones.
                         </motion.p>
@@ -126,12 +126,12 @@ export default function ExplorePage() {
                             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
                         >
                             <Link href="/chat">
-                                <Button size="xl" className="h-14 px-8 rounded-2xl bg-white text-slate-900 font-black hover:bg-blue-50 transition-all flex items-center gap-2 shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
+                                <Button size="lg" className="h-14 px-8 rounded-2xl bg-white text-slate-900 font-black hover:bg-blue-50 transition-all flex items-center gap-2 shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
                                     <MessageCircle className="h-5 w-5" />
                                     Continue Career Chat
                                 </Button>
                             </Link>
-                            <Button size="xl" variant="outline" className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 text-white font-black hover:bg-white/10 transition-all flex items-center gap-2">
+                            <Button size="lg" variant="outline" className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 text-white font-black hover:bg-white/10 transition-all flex items-center gap-2">
                                 <RefreshCcw className="h-5 w-5" />
                                 Regenerate Roadmap
                             </Button>
@@ -158,8 +158,8 @@ export default function ExplorePage() {
                                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                                         <item.icon className="h-12 w-12 text-white" />
                                     </div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{item.label}</p>
-                                    <h4 className="text-lg font-bold text-white leading-tight">{item.value}</h4>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{item.label}</p>
+                                    <h4 className="text-lg font-bold !text-white leading-tight">{item.value}</h4>
                                 </motion.div>
                             ))}
                         </div>
@@ -171,7 +171,7 @@ export default function ExplorePage() {
                     <section className="container mx-auto px-4 pb-12">
                         <div className="max-w-4xl mx-auto py-12 border-t border-white/5">
                             <div className="flex items-center justify-between mb-8">
-                                <h2 className="text-3xl font-black tracking-tighter uppercase italic">Your Progress</h2>
+                                <h2 className="text-3xl font-black tracking-tighter uppercase italic !text-white force-text-contrast">Your Progress</h2>
                                 <span className="text-sm font-bold text-blue-400 uppercase tracking-widest">33% Completed</span>
                             </div>
                             
@@ -197,8 +197,8 @@ export default function ExplorePage() {
                                                 {step.status === "Complete" ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-5 w-5" />}
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{step.label}</p>
-                                                <p className={cn("text-xs font-bold", step.status === "Current" ? "text-white" : "text-slate-400")}>{step.title}</p>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{step.label}</p>
+                                                <p className={cn("text-xs font-bold", step.status === "Current" ? "!text-white" : "text-slate-300")}>{step.title}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -218,12 +218,12 @@ export default function ExplorePage() {
                                 <div className="h-20 w-20 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto">
                                     <Search className="h-10 w-10 text-blue-400" />
                                 </div>
-                                <h3 className="text-3xl font-black tracking-tighter uppercase italic">No Roadmap Found</h3>
+                                <h3 className="text-3xl font-black tracking-tighter uppercase italic !text-white">No Roadmap Found</h3>
                                 <p className="text-slate-400 font-medium leading-relaxed">
                                     Chat with our AI to generate a highly personalized roadmap of careers and courses tailored just for you.
                                 </p>
                                 <Link href="/chat" className="inline-block pt-4">
-                                    <Button size="xl" className="h-14 px-8 rounded-2xl bg-white text-slate-900 font-black hover:bg-blue-50 transition-all flex items-center gap-2">
+                                    <Button size="lg" className="h-14 px-8 rounded-2xl bg-white text-slate-900 font-black hover:bg-blue-50 transition-all flex items-center gap-2">
                                         <MessageCircle className="h-5 w-5" />
                                         Start AI Chat Now
                                     </Button>
@@ -237,8 +237,8 @@ export default function ExplorePage() {
                 {hasRecommendations && (
                     <section className="py-32 container mx-auto px-4 border-t border-white/5">
                         <div className="text-center space-y-4 mb-20">
-                            <h2 className="text-5xl font-black tracking-tighter leading-none uppercase italic">Alternative Paths</h2>
-                            <p className="text-lg text-slate-400 font-medium">Other career trajectories that align with your profile</p>
+                            <h2 className="text-5xl font-black tracking-tighter leading-none uppercase italic !text-white force-text-contrast">Alternative Paths</h2>
+                            <p className="text-lg text-slate-300 font-medium">Other career trajectories that align with your profile</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -259,18 +259,18 @@ export default function ExplorePage() {
                                     <div className="flex justify-between items-start mb-6">
                                         <div className="space-y-1">
                                             <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{career.matchScore || 85}% Match</p>
-                                            <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{career.title}</h3>
+                                            <h3 className="text-2xl font-bold !text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{career.title}</h3>
                                         </div>
                                     </div>
 
                                     <div className="mt-auto space-y-6">
                                         <div className="flex justify-between border-t border-white/10 pt-6">
                                             <div className="space-y-1">
-                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Entry Salary</p>
-                                                <p className="font-bold text-white">{career.salaryRange ? `₹${career.salaryRange.min/100000}L – ₹${career.salaryRange.max/100000}L` : career.salary}</p>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Entry Salary</p>
+                                                <p className="font-bold !text-white">{career.salaryRange ? `₹${career.salaryRange.min/100000}L – ₹${career.salaryRange.max/100000}L` : career.salary}</p>
                                             </div>
                                             <div className="text-right space-y-1">
-                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Growth</p>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Growth</p>
                                                 <p className="font-bold text-emerald-400">{career.outlook || career.growth}</p>
                                             </div>
                                         </div>
@@ -291,8 +291,8 @@ export default function ExplorePage() {
                         <div className="flex flex-col lg:flex-row items-center gap-16 max-w-6xl mx-auto">
                             <div className="flex-1 space-y-8">
                                 <div className="space-y-4">
-                                    <h2 className="text-5xl font-black tracking-tighter leading-tight uppercase italic">How This Roadmap <br /> Was Generated</h2>
-                                    <p className="text-lg text-slate-400 font-medium">Our AI analyzes thousands of data points to craft your unique journey.</p>
+                                    <h2 className="text-5xl font-black tracking-tighter leading-tight uppercase italic !text-white force-text-contrast">How This Roadmap <br /> Was Generated</h2>
+                                    <p className="text-lg text-slate-300 font-medium">Our AI analyzes thousands of data points to craft your unique journey.</p>
                                 </div>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -307,8 +307,8 @@ export default function ExplorePage() {
                                                 {i + 1}
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-white uppercase tracking-tight text-xs">{step.title}</h4>
-                                                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-tight">{step.desc}</p>
+                                                <h4 className="font-bold !text-white uppercase tracking-tight text-xs force-text-contrast">{step.title}</h4>
+                                                <p className="text-[10px] text-slate-400 font-medium uppercase tracking-tight">{step.desc}</p>
                                             </div>
                                         </div>
                                     ))}
